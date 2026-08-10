@@ -100,10 +100,7 @@
     }
 
     @media (max-width: 480px) {
-      .app-container {
-        padding: 0;
-      }
-
+      .app-container { padding: 0; }
       .glass-card {
         width: 100vw;
         height: 100vh;
@@ -131,41 +128,13 @@
       visibility: hidden;
     }
 
-    h2 {
-      font-size: 1.6rem;
-      margin-bottom: 6px;
-      text-align: center;
-    }
+    h2 { font-size: 1.6rem; margin-bottom: 6px; text-align: center; }
+    .subtitle { color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 20px; }
+    .user-welcome { color: var(--accent-cyan); font-weight: 600; text-align: center; margin-bottom: 16px; font-size: 0.95rem; }
 
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .user-welcome {
-      color: var(--accent-cyan);
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 16px;
-      font-size: 0.95rem;
-    }
-
-    .input-group {
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .input-group label {
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-      color: var(--text-muted);
-    }
-
-    .input-group input,
-    .input-group select {
+    .input-group { margin-bottom: 14px; display: flex; flex-direction: column; }
+    .input-group label { font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted); }
+    .input-group input, .input-group select {
       width: 100%;
       padding: 12px 14px;
       background: rgba(255, 255, 255, 0.05);
@@ -177,24 +146,13 @@
       transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    .input-group select option {
-      background: #0b132b;
-      color: var(--text-main);
-    }
-
-    .input-group input:focus,
-    .input-group select:focus {
+    .input-group select option { background: #0b132b; color: var(--text-main); }
+    .input-group input:focus, .input-group select:focus {
       border-color: var(--accent-cyan);
       box-shadow: 0 0 10px var(--accent-glow);
     }
 
-    .error-msg {
-      color: var(--error-color);
-      font-size: 0.85rem;
-      min-height: 20px;
-      margin-bottom: 12px;
-      text-align: center;
-    }
+    .error-msg { color: var(--error-color); font-size: 0.85rem; min-height: 20px; margin-bottom: 12px; text-align: center; }
 
     .interactive-btn {
       position: relative;
@@ -214,14 +172,8 @@
       user-select: none;
     }
 
-    .interactive-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(76, 201, 240, 0.6);
-    }
-
-    .interactive-btn:active {
-      transform: translateY(1px);
-    }
+    .interactive-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 201, 240, 0.6); }
+    .interactive-btn:active { transform: translateY(1px); }
 
     .ripple {
       position: absolute;
@@ -232,27 +184,10 @@
       pointer-events: none;
     }
 
-    @keyframes ripple-effect {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
+    @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
 
-    .db-section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .db-status {
-      font-size: 0.8rem;
-      color: var(--accent-cyan);
-      text-align: center;
-      min-height: 18px;
-    }
-
+    .db-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .db-status { font-size: 0.8rem; color: var(--accent-cyan); text-align: center; min-height: 18px; }
     .db-table-wrapper {
       max-height: 200px;
       overflow-y: auto;
@@ -261,22 +196,9 @@
       background: rgba(0, 0, 0, 0.2);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    th, td {
-      padding: 10px 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--glass-border);
-    }
-
-    th {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--accent-cyan);
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--glass-border); }
+    th { background: rgba(255, 255, 255, 0.1); color: var(--accent-cyan); }
 
     .action-btn {
       padding: 4px 8px;
@@ -288,24 +210,9 @@
       margin-right: 4px;
     }
 
-    .edit-btn {
-      background: var(--edit-color);
-      color: #000;
-    }
-
-    .delete-btn {
-      background: var(--error-color);
-      color: #fff;
-    }
-
-    .logout-btn {
-      background: linear-gradient(135deg, #f72585, #7209b7);
-      box-shadow: 0 4px 15px rgba(247, 37, 133, 0.4);
-    }
-
-    .logout-btn:hover {
-      box-shadow: 0 6px 20px rgba(247, 37, 133, 0.6);
-    }
+    .edit-btn { background: var(--edit-color); color: #000; }
+    .delete-btn { background: var(--error-color); color: #fff; }
+    .logout-btn { background: linear-gradient(135deg, #f72585, #7209b7); box-shadow: 0 4px 15px rgba(247, 37, 133, 0.4); }
   </style>
 </head>
 <body>
@@ -389,8 +296,7 @@
   </div>
 
   <script>
-    // Paste your Web App URL here
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyHSlcJCxnM3NzBSRSTV5pAfhe83RR7Cgalc8jm1lsQHXePSY1pIUaG5nXNYHtrVB3uw/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycDTUU-luDKhwecyF5foHatv24jB7-Pxr32L_t7Ms5ja03HKpA_oU_DEWqAecnYNGrlQ/exec";
 
     const userDatabase = {
       Gilgal: "1111",
@@ -453,11 +359,11 @@
       switchLayout(homeLayout, loginLayout);
     });
 
-    // READ
+    // READ: Direct fetch call without CORS trigger headers
     async function fetchUserData(username) {
       dbStatus.textContent = "Connecting to spreadsheet...";
       try {
-        const response = await fetch(`${APPS_SCRIPT_URL}?user=${encodeURIComponent(username)}`);
+        const response = await fetch(`${APPS_SCRIPT_URL}?user=${encodeURIComponent(username)}&action=read`);
         const result = await response.json();
 
         if (result.status === "success") {
@@ -467,7 +373,7 @@
           dbStatus.textContent = "Error: " + result.message;
         }
       } catch (err) {
-        dbStatus.textContent = "Failed to communicate with Apps Script.";
+        dbStatus.textContent = "Failed to communicate with Apps Script. Check deployment.";
       }
     }
 
@@ -533,10 +439,10 @@
       }
     }
 
+    // Safe POST Helper (Omits headers to avoid triggering browser CORS OPTIONS preflight)
     async function sendPostRequest(payload) {
       const response = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(payload)
       });
       return await response.json();
