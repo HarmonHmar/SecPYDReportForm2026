@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>REPORT FORM 2026</title>
+  <style>
+    /* Base Styles & Dark Blue Theme */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0a1128 0%, #1c2541 50%, #0b132b 100%);
+      --glass-bg: rgba(255, 255, 255, 0.07);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --text-main: #ffffff;
+      --text-muted: #8d99ae;
+      --accent-cyan: #4cc9f0;
+      --accent-glow: rgba(76, 201, 240, 0.4);
+      --error-color: #f72585;
+      --edit-color: #ffb703;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Dynamic Viewport Setup */
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Background Glows */
+    .bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .shape1 {
+      width: 45vw;
+      height: 45vw;
+      max-width: 400px;
+      max-height: 400px;
+      background: #4895ef;
+      top: 10%;
+      left: 10%;
+    }
+
+    .shape2 {
+      width: 50vw;
+      height: 50vw;
+      max-width: 450px;
+      max-height: 450px;
+      background: #7209b7;
+      bottom: 10%;
+      right: 10%;
+    }
+
+    .app-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1;
+    }
+
+    /* Glassmorphism Card Container */
+    .glass-card {
+      position: absolute;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    }
+
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 0;
+      }
+
+      .glass-card {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        max-width: 100vw;
+        border-radius: 0;
+        border: none;
+        padding: 24px 16px;
+        justify-content: flex-start;
+        overflow-y: auto;
+      }
+    }
+
+    .layout.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .layout.hidden {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .user-welcome {
+      color: var(--accent-cyan);
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+
+    .input-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-group label {
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .input-group select option {
+      background: #0b132b;
+      color: var(--text-main);
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .error-msg {
+      color: var(--error-color);
+      font-size: 0.85rem;
+      min-height: 20px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    /* Buttons & Touch Accessibility */
+    .interactive-btn {
+      position: relative;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4cc9f0, #4361ee);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .interactive-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 201, 240, 0.6);
+    }
+
+    .interactive-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Ripple Animation Effect */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      transform: scale(0);
+      animation: ripple-effect 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple-effect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Data Management Controls */
+    .db-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .db-status {
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      text-align: center;
+      min-height: 18px;
+    }
+
+    .db-table-wrapper {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent-cyan);
+    }
+
+    .action-btn {
+      padding: 4px 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .edit-btn {
+      background: var(--edit-color);
+      color: #000;
+    }
+
+    .delete-btn {
+      background: var(--error-color);
+      color: #fff;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #f72585, #7209b7);
+      box-shadow: 0 4px 15px rgba(247, 37, 133, 0.4);
+    }
+
+    .logout-btn:hover {
+      box-shadow: 0 6px 20px rgba(247, 37, 133, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Shapes -->
+  <div class="bg-shape shape1"></div>
+  <div class="bg-shape shape2"></div>
+
+  <div class="app-container">
+
+    <!-- Login Layout -->
+    <main id="login-layout" class="glass-card layout active">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Please enter your credentials to continue</p>
+      
+      <form id="login-form">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <select id="username" required>
+            <option value="" disabled selected>Select user</option>
+            <option value="Gilgal">Gilgal</option>
+            <option value="Tabernacle">Tabernacle</option>
+            <option value="Jorkha">Jorkha</option>
+            <option value="Hmarkhawlien">Hmarkhawlien</option>
+            <option value="Chikhur">Chikhur</option>
+            <option value="Bethel">Bethel</option>
+            <option value="Tlangmawi">Tlangmawi</option>
+            <option value="Zoar">Zoar</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••" required />
+        </div>
+
+        <div id="error-msg" class="error-msg"></div>
+
+        <button type="submit" id="login-btn" class="interactive-btn">
+          <span>Log In</span>
+        </button>
+      </form>
+    </main>
+
+    <!-- Home Layout -->
+    <main id="home-layout" class="glass-card layout hidden">
+      <header class="home-header">
+        <h2>REPORT FORM 2026</h2>
+        <p class="subtitle">(Reporting period: September - October 2026)</p>
+        <p class="user-welcome">Logged in as: <span id="user-display">User</span></p>
+      </header>
+
+      <div class="db-section">
+        <div class="input-group">
+          <label for="entry-data">Data Entry Management</label>
+          <input type="text" id="entry-data" placeholder="Enter or modify record data..." />
+        </div>
+        <button id="add-record-btn" class="interactive-btn">Add New Record</button>
+
+        <div class="db-status" id="db-status">Fetching spreadsheet data...</div>
+
+        <div class="db-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Record Info</th>
+                <th style="width: 100px; text-align: center;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="db-body">
+              <tr><td colspan="2">No records found</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <button id="logout-btn" class="interactive-btn logout-btn">
+        <span>Log Out</span>
+      </button>
+    </main>
+
+  </div>
+
+  <script>
+    // Live Google Apps Script Web App URL
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyHSlcJCxnM3NzBSRSTV5pAfhe83RR7Cgalc8jm1lsQHXePSY1pIUaG5nXNYHtrVB3uw/exec";
+
+    // User Authentication Mapping
+    const userDatabase = {
+      Gilgal: "1111",
+      Tabernacle: "2222",
+      Jorkha: "3333",
+      Hmarkhawlien: "4444",
+      Chikhur: "5555",
+      Bethel: "6666",
+      Tlangmawi: "7777",
+      Zoar: "8888"
+    };
+
+    let currentUser = null;
+
+    // DOM Elements
+    const loginLayout = document.getElementById("login-layout");
+    const homeLayout = document.getElementById("home-layout");
+    const loginForm = document.getElementById("login-form");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const errorMsg = document.getElementById("error-msg");
+    const userDisplay = document.getElementById("user-display");
+    const logoutBtn = document.getElementById("logout-btn");
+    const dbStatus = document.getElementById("db-status");
+    const dbBody = document.getElementById("db-body");
+    const entryInput = document.getElementById("entry-data");
+    const addRecordBtn = document.getElementById("add-record-btn");
+
+    function switchLayout(hideLayout, showLayout) {
+      hideLayout.classList.remove("active");
+      hideLayout.classList.add("hidden");
+
+      setTimeout(() => {
+        showLayout.classList.remove("hidden");
+        showLayout.classList.add("active");
+      }, 400); 
+    }
+
+    // Login Handler
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const selectedUser = usernameInput.value;
+      const enteredPassword = passwordInput.value;
+
+      if (userDatabase[selectedUser] && userDatabase[selectedUser] === enteredPassword) {
+        errorMsg.textContent = "";
+        currentUser = selectedUser;
+        userDisplay.textContent = currentUser;
+        
+        switchLayout(loginLayout, homeLayout);
+        passwordInput.value = "";
+        
+        // Fetch User Data from dedicated Spreadsheet
+        fetchUserData(currentUser);
+      } else {
+        errorMsg.textContent = "Invalid credentials. Please try again.";
+      }
+    });
+
+    // Logout Handler
+    logoutBtn.addEventListener("click", () => {
+      currentUser = null;
+      dbBody.innerHTML = '<tr><td colspan="2">No records found</td></tr>';
+      switchLayout(homeLayout, loginLayout);
+    });
+
+    // 1. READ: Fetch Data from Spreadsheet
+    async function fetchUserData(username) {
+      dbStatus.textContent = "Connecting to spreadsheet...";
+      try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?user=${encodeURIComponent(username)}`);
+        const result = await response.json();
+
+        if (result.status === "success") {
+          dbStatus.textContent = "Data successfully loaded";
+          renderTableData(result.data);
+        } else {
+          dbStatus.textContent = "Error: " + result.message;
+        }
+      } catch (err) {
+        dbStatus.textContent = "Failed to communicate with Apps Script.";
+      }
+    }
+
+    // 2. CREATE: Append New Row
+    addRecordBtn.addEventListener("click", async () => {
+      const val = entryInput.value.trim();
+      if (!val || !currentUser) return;
+
+      dbStatus.textContent = "Adding row entry...";
+      try {
+        const payload = {
+          user: currentUser,
+          action: "append",
+          row: [val, new Date().toLocaleString()]
+        };
+
+        await sendPostRequest(payload);
+        entryInput.value = "";
+        fetchUserData(currentUser);
+      } catch (err) {
+        dbStatus.textContent = "Failed to add record.";
+      }
+    });
+
+    // 3. MODIFY: Edit Cell Value
+    async function modifyRecord(rowIndex, currentValue) {
+      const newValue = prompt("Modify record entry:", currentValue);
+      if (!newValue || newValue.trim() === "" || newValue === currentValue) return;
+
+      dbStatus.textContent = "Updating record...";
+      try {
+        const payload = {
+          user: currentUser,
+          action: "update",
+          rowIndex: rowIndex + 1, // 1-based index for Apps Script
+          colIndex: 1,            // Column 1
+          value: newValue.trim()
+        };
+
+        await sendPostRequest(payload);
+        fetchUserData(currentUser);
+      } catch (err) {
+        dbStatus.textContent = "Failed to modify record.";
+      }
+    }
+
+    // 4. DELETE: Remove Row
+    async function deleteRecord(rowIndex) {
+      if (!confirm("Are you sure you want to delete this row?")) return;
+
+      dbStatus.textContent = "Deleting record...";
+      try {
+        const payload = {
+          user: currentUser,
+          action: "delete",
+          rowIndex: rowIndex + 1 // 1-based index for Apps Script
+        };
+
+        await sendPostRequest(payload);
+        fetchUserData(currentUser);
+      } catch (err) {
+        dbStatus.textContent = "Failed to delete record.";
+      }
+    }
+
+    // Helper POST Handler
+    async function sendPostRequest(payload) {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return await response.json();
+    }
+
+    // Table Rendering Engine
+    function renderTableData(data) {
+      if (!data || data.length === 0) {
+        dbBody.innerHTML = '<tr><td colspan="2">Spreadsheet is currently empty</td></tr>';
+        return;
+      }
+
+      dbBody.innerHTML = data.map((row, index) => {
+        const rowData = Array.isArray(row) ? row.join(" | ") : row;
+        return `
+          <tr>
+            <td>${rowData}</td>
+            <td style="text-align: center;">
+              <button class="action-btn edit-btn" onclick="modifyRecord(${index}, '${rowData.replace(/'/g, "\\'")}')">Edit</button>
+              <button class="action-btn delete-btn" onclick="deleteRecord(${index})">Del</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // Dynamic Click Animation Ripple Effect
+    document.querySelectorAll(".interactive-btn").forEach((button) => {
+      button.addEventListener("click", function (e) {
+        const circle = document.createElement("span");
+        const diameter = Math.max(this.clientWidth, this.clientHeight);
+        const radius = diameter / 2;
+
+        const rect = this.getBoundingClientRect();
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - rect.left - radius}px`;
+        circle.style.top = `${e.clientY - rect.top - radius}px`;
+        circle.classList.add("ripple");
+
+        const existingRipple = this.querySelector(".ripple");
+        if (existingRipple) existingRipple.remove();
+
+        this.appendChild(circle);
+      });
+    });
+  </script>
+</body>
+</html>
