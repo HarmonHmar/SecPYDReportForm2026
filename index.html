@@ -360,7 +360,7 @@
       <div class="db-section">
         <div class="input-group">
           <label for="entry-data">Data Entry Management</label>
-          <input type="text" id="entry-data" placeholder="Enter or modify record data..." />
+          <input type="text" id="entry-data" placeholder="Enter record data..." />
         </div>
         <button id="add-record-btn" class="interactive-btn">Add New Record</button>
 
@@ -389,6 +389,7 @@
   </div>
 
   <script>
+    // Paste your Web App URL here
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyHSlcJCxnM3NzBSRSTV5pAfhe83RR7Cgalc8jm1lsQHXePSY1pIUaG5nXNYHtrVB3uw/exec";
 
     const userDatabase = {
@@ -543,7 +544,7 @@
 
     function renderTableData(data) {
       if (!data || data.length === 0) {
-        dbBody.innerHTML = '<tr><td colspan="2">Spreadsheet is currently empty</td></tr>';
+        dbBody.innerHTML = '<tr><td colspan="2">Sheet is currently empty</td></tr>';
         return;
       }
 
