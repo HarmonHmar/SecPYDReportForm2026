@@ -15,204 +15,79 @@
       --accent-cyan: #4cc9f0;
       --accent-glow: rgba(76, 201, 240, 0.4);
       --error-color: #f72585;
-      --edit-color: #ffb703;
+      --success-color: #4895ef;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
     html, body {
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: var(--bg-gradient);
-      color: var(--text-main);
+      width: 100vw; height: 100vh; height: 100dvh;
+      margin: 0; padding: 0; overflow: hidden;
+      background: var(--bg-gradient); color: var(--text-main);
     }
 
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
+    body { display: flex; justify-content: center; align-items: center; position: relative; }
 
-    .bg-shape {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .shape1 {
-      width: 45vw;
-      height: 45vw;
-      max-width: 400px;
-      max-height: 400px;
-      background: #4895ef;
-      top: 10%;
-      left: 10%;
-    }
-
-    .shape2 {
-      width: 50vw;
-      height: 50vw;
-      max-width: 450px;
-      max-height: 450px;
-      background: #7209b7;
-      bottom: 10%;
-      right: 10%;
-    }
+    .bg-shape { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none; }
+    .shape1 { width: 45vw; height: 45vw; max-width: 400px; max-height: 400px; background: #4895ef; top: 10%; left: 10%; }
+    .shape2 { width: 50vw; height: 50vw; max-width: 450px; max-height: 450px; background: #7209b7; bottom: 10%; right: 10%; }
 
     .app-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      z-index: 1;
+      position: relative; width: 100%; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      padding: 20px; z-index: 1;
     }
 
     .glass-card {
-      position: absolute;
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
-      border-radius: 20px;
-      padding: 30px;
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      position: absolute; background: var(--glass-bg);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
+      border-radius: 20px; padding: 24px; width: 100%; max-width: 600px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      max-height: 90vh; overflow-y: auto;
       transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
     }
 
     @media (max-width: 480px) {
       .app-container { padding: 0; }
-      .glass-card {
-        width: 100vw;
-        height: 100vh;
-        height: 100dvh;
-        max-width: 100vw;
-        border-radius: 0;
-        border: none;
-        padding: 24px 16px;
-        justify-content: flex-start;
-        overflow-y: auto;
-      }
+      .glass-card { width: 100vw; height: 100vh; height: 100dvh; max-width: 100vw; max-height: 100dvh; border-radius: 0; border: none; padding: 20px 16px; }
     }
 
-    .layout.active {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: auto;
-      visibility: visible;
-    }
+    .layout.active { opacity: 1; transform: scale(1); pointer-events: auto; visibility: visible; }
+    .layout.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; visibility: hidden; }
 
-    .layout.hidden {
-      opacity: 0;
-      transform: scale(0.95);
-      pointer-events: none;
-      visibility: hidden;
-    }
+    h2 { font-size: 1.5rem; margin-bottom: 4px; text-align: center; }
+    .subtitle { color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 16px; }
+    .user-welcome { color: var(--accent-cyan); font-weight: 600; text-align: center; margin-bottom: 12px; font-size: 0.9rem; }
 
-    h2 { font-size: 1.6rem; margin-bottom: 6px; text-align: center; }
-    .subtitle { color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 20px; }
-    .user-welcome { color: var(--accent-cyan); font-weight: 600; text-align: center; margin-bottom: 16px; font-size: 0.95rem; }
+    /* Progress Bar */
+    .progress-bar-container { width: 100%; background: rgba(255, 255, 255, 0.1); height: 8px; border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--success-color)); width: 5.88%; transition: width 0.3s ease; }
 
-    .input-group { margin-bottom: 14px; display: flex; flex-direction: column; }
-    .input-group label { font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted); }
+    .section-title { color: var(--accent-cyan); font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; }
+
+    .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    .input-group { display: flex; flex-direction: column; }
+    .input-group label { font-size: 0.8rem; margin-bottom: 4px; color: var(--text-muted); }
     .input-group input, .input-group select {
-      width: 100%;
-      padding: 12px 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      color: var(--text-main);
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.3s, box-shadow 0.3s;
+      padding: 10px; background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border); border-radius: 8px;
+      color: var(--text-main); font-size: 0.9rem; outline: none;
     }
-
+    .input-group input:focus, .input-group select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-glow); }
     .input-group select option { background: #0b132b; color: var(--text-main); }
-    .input-group input:focus, .input-group select:focus {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 10px var(--accent-glow);
-    }
 
-    .error-msg { color: var(--error-color); font-size: 0.85rem; min-height: 20px; margin-bottom: 12px; text-align: center; }
-
+    .nav-buttons { display: flex; gap: 10px; margin-top: 16px; }
     .interactive-btn {
-      position: relative;
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #4cc9f0, #4361ee);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
+      flex: 1; padding: 12px; background: linear-gradient(135deg, #4cc9f0, #4361ee);
+      border: none; border-radius: 10px; color: #fff; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; overflow: hidden; position: relative; transition: transform 0.2s;
     }
-
-    .interactive-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 201, 240, 0.6); }
+    .interactive-btn.secondary { background: rgba(255, 255, 255, 0.1); }
     .interactive-btn:active { transform: translateY(1px); }
 
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.6);
-      transform: scale(0);
-      animation: ripple-effect 0.6s linear;
-      pointer-events: none;
-    }
-
-    @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
-
-    .db-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-    .db-status { font-size: 0.8rem; color: var(--accent-cyan); text-align: center; min-height: 18px; }
-    .db-table-wrapper {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--glass-border); }
-    th { background: rgba(255, 255, 255, 0.1); color: var(--accent-cyan); }
-
-    .action-btn {
-      padding: 4px 8px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-right: 4px;
-    }
-
-    .edit-btn { background: var(--edit-color); color: #000; }
-    .delete-btn { background: var(--error-color); color: #fff; }
-    .logout-btn { background: linear-gradient(135deg, #f72585, #7209b7); box-shadow: 0 4px 15px rgba(247, 37, 133, 0.4); }
+    .error-msg { color: var(--error-color); font-size: 0.85rem; min-height: 18px; margin-bottom: 8px; text-align: center; }
+    .status-msg { color: var(--accent-cyan); font-size: 0.8rem; text-align: center; min-height: 16px; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -228,7 +103,7 @@
       <p class="subtitle">Please enter your credentials to continue</p>
       
       <form id="login-form">
-        <div class="input-group">
+        <div class="input-group" style="margin-bottom:12px;">
           <label for="username">Username</label>
           <select id="username" required>
             <option value="" disabled selected>Select user</option>
@@ -243,248 +118,203 @@
           </select>
         </div>
 
-        <div class="input-group">
+        <div class="input-group" style="margin-bottom:12px;">
           <label for="password">Password</label>
           <input type="password" id="password" placeholder="••••" required />
         </div>
 
         <div id="error-msg" class="error-msg"></div>
 
-        <button type="submit" id="login-btn" class="interactive-btn">
-          <span>Log In</span>
-        </button>
+        <button type="submit" class="interactive-btn"><span>Log In</span></button>
       </form>
     </main>
 
-    <!-- Home Layout -->
+    <!-- 17-Section Wizard Form Layout -->
     <main id="home-layout" class="glass-card layout hidden">
-      <header class="home-header">
+      <header>
         <h2>REPORT FORM 2026</h2>
         <p class="subtitle">(Reporting period: September - October 2026)</p>
         <p class="user-welcome">Logged in as: <span id="user-display">User</span></p>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
       </header>
 
-      <div class="db-section">
-        <div class="input-group">
-          <label for="entry-data">Data Entry Management</label>
-          <input type="text" id="entry-data" placeholder="Enter record data..." />
+      <form id="wizard-form">
+        <div class="section-title" id="section-title">Section 1: Local</div>
+        <div id="section-container"></div>
+        <div id="status-msg" class="status-msg"></div>
+
+        <div class="nav-buttons">
+          <button type="button" id="prev-btn" class="interactive-btn secondary" style="display:none;">Back</button>
+          <button type="button" id="next-btn" class="interactive-btn">Next Section</button>
         </div>
-        <button id="add-record-btn" class="interactive-btn">Add New Record</button>
-
-        <div class="db-status" id="db-status">Fetching spreadsheet data...</div>
-
-        <div class="db-table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Record Info</th>
-                <th style="width: 100px; text-align: center;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="db-body">
-              <tr><td colspan="2">No records found</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <button id="logout-btn" class="interactive-btn logout-btn">
-        <span>Log Out</span>
-      </button>
+      </form>
     </main>
 
   </div>
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycDTUU-luDKhwecyF5foHatv24jB7-Pxr32L_t7Ms5ja03HKpA_oU_DEWqAecnYNGrlQ/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyHSlcJCxnM3NzBSRSTV5pAfhe83RR7Cgalc8jm1lsQHXePSY1pIUaG5nXNYHtrVB3uw/exec";
 
     const userDatabase = {
-      Gilgal: "1111",
-      Tabernacle: "2222",
-      Jorkha: "3333",
-      Hmarkhawlien: "4444",
-      Chikhur: "5555",
-      Bethel: "6666",
-      Tlangmawi: "7777",
-      Zoar: "8888"
+      Gilgal: "1111", Tabernacle: "2222", Jorkha: "3333", Hmarkhawlien: "4444",
+      Chikhur: "5555", Bethel: "6666", Tlangmawi: "7777", Zoar: "8888"
     };
 
     let currentUser = null;
+    let currentStep = 1;
+    const totalSteps = 17;
+
+    const sectionsConfig = [
+      { id: 1, title: "1. Local", fields: [{ cell: "C1", label: "Local Name" }, { cell: "C2", label: "Local Chairman" }, { cell: "E2", label: "Phone" }] },
+      { id: 2, title: "2. Officials", fields: [
+        { cell: "C5", label: "President" }, { cell: "E5", label: "President Phone" },
+        { cell: "C6", label: "Vice President" }, { cell: "E6", label: "VP Phone" },
+        { cell: "C7", label: "Secretary" }, { cell: "E7", label: "Secretary Phone" },
+        { cell: "C8", label: "Assist Secretary" }, { cell: "E8", label: "Assist Sec Phone" },
+        { cell: "C9", label: "Treasurer" }, { cell: "E9", label: "Treasurer Phone" }
+      ]},
+      { id: 3, title: "3. Statistics", fields: [
+        { cell: "C13", label: "2025 Member (M)" }, { cell: "D13", label: "2025 Member (F)" }, { cell: "E13", label: "2025 Total" },
+        { cell: "C14", label: "New Member (M)" }, { cell: "D14", label: "New Member (F)" }, { cell: "E14", label: "New Member Total" },
+        { cell: "C15", label: "Total Member 2026 (M)" }, { cell: "D15", label: "(F)" }, { cell: "E15", label: "Total" },
+        { cell: "C16", label: "Married (M)" }, { cell: "D16", label: "(F)" }, { cell: "E16", label: "Total" },
+        { cell: "C17", label: "Unmarried (M)" }, { cell: "D17", label: "(F)" }, { cell: "E17", label: "Total" },
+        { cell: "C18", label: "Received HS (M)" }, { cell: "D18", label: "(F)" }, { cell: "E18", label: "Total" },
+        { cell: "C19", label: "Total HS (M)" }, { cell: "D19", label: "(F)" }, { cell: "E19", label: "Total" }
+      ]},
+      { id: 4, title: "4. Any Project?", fields: [{ cell: "C21", label: "Project Details" }] },
+      { id: 5, title: "5. Envelope", fields: [
+        { cell: "B25", label: "1. Name" }, { cell: "C25", label: "Father" }, { cell: "D25", label: "Amount" },
+        { cell: "B26", label: "2. Name" }, { cell: "C26", label: "Father" }, { cell: "D26", label: "Amount" },
+        { cell: "B27", label: "3. Name" }, { cell: "C27", label: "Father" }, { cell: "D27", label: "Amount" }
+      ]},
+      { id: 6, title: "6. Other Achievement", fields: [{ cell: "C29", label: "Achievement" }] },
+      { id: 7, title: "7. PYD Day?", fields: [{ cell: "C31", label: "PYD Day Details" }] },
+      { id: 8, title: "8. Roasted Rice", fields: [
+        { cell: "B35", label: "1. Name" }, { cell: "C35", label: "Amount" },
+        { cell: "B36", label: "2. Name" }, { cell: "C36", label: "Amount" },
+        { cell: "B37", label: "3. Name" }, { cell: "C37", label: "Amount" }
+      ]},
+      { id: 9, title: "9. Social Work Day?", fields: [{ cell: "C39", label: "Social Work Day Details" }] },
+      { id: 10, title: "10. Financial", fields: [
+        { cell: "C43", label: "Local Target Inc" }, { cell: "D43", label: "Exp" },
+        { cell: "C44", label: "Bamboo Project Inc" }, { cell: "D44", label: "Exp" },
+        { cell: "C45", label: "Musical Inc" }, { cell: "D45", label: "Exp" },
+        { cell: "C46", label: "For Land Inc" }, { cell: "D46", label: "Exp" },
+        { cell: "C47", label: "Cond Fund Inc" }, { cell: "D47", label: "Exp" },
+        { cell: "C48", label: "Envelope Inc" }, { cell: "D48", label: "Exp" },
+        { cell: "C49", label: "Membership Fee Inc" }, { cell: "D49", label: "Exp" },
+        { cell: "C50", label: "Ruby Jubilee Inc" }, { cell: "D50", label: "Exp" },
+        { cell: "C51", label: "Education Inc" }, { cell: "D51", label: "Exp" },
+        { cell: "C52", label: "Other Source Inc" }, { cell: "D52", label: "Exp" },
+        { cell: "C53", label: "Added Target Inc" }, { cell: "D53", label: "Exp" },
+        { cell: "C54", label: "Miscellaneous Inc" }, { cell: "D54", label: "Exp" },
+        { cell: "C55", label: "TOTAL Inc" }, { cell: "D55", label: "Exp" }
+      ]},
+      { id: 11, title: "11. Quit Smoking 2025", fields: [{ cell: "B59", label: "Male" }, { cell: "C59", label: "Female" }, { cell: "D59", label: "Total" }] },
+      { id: 12, title: "12. New Quit Smoke", fields: [
+        { cell: "B63", label: "1. Name" }, { cell: "C63", label: "Father" }, { cell: "D63", label: "Gender" },
+        { cell: "B64", label: "2. Name" }, { cell: "C64", label: "Father" }, { cell: "D64", label: "Gender" },
+        { cell: "B65", label: "3. Name" }, { cell: "C65", label: "Father" }, { cell: "D65", label: "Gender" }
+      ]},
+      { id: 13, title: "13. Total Quit Smoke", fields: [{ cell: "B81", label: "Male" }, { cell: "C81", label: "Female" }, { cell: "D81", label: "Total" }] },
+      { id: 14, title: "14. Leadership", fields: [
+        { cell: "B85", label: "1. Name" }, { cell: "C85", label: "Father" }, { cell: "D85", label: "Designation+Year" },
+        { cell: "B86", label: "2. Name" }, { cell: "C86", label: "Father" }, { cell: "D86", label: "Designation+Year" }
+      ]},
+      { id: 15, title: "15. Education Achieve", fields: [
+        { cell: "B98", label: "1. Name" }, { cell: "C98", label: "Father" }, { cell: "D98", label: "Class" }, { cell: "E98", label: "Div" }, { cell: "F98", label: "%" }, { cell: "G98", label: "Board" },
+        { cell: "B99", label: "2. Name" }, { cell: "C99", label: "Father" }, { cell: "D99", label: "Class" }, { cell: "E99", label: "Div" }, { cell: "F99", label: "%" }, { cell: "G99", label: "Board" }
+      ]},
+      { id: 16, title: "16. New Worker", fields: [
+        { cell: "B126", label: "1. Name" }, { cell: "C126", label: "Father" }, { cell: "D126", label: "Title" }, { cell: "E126", label: "Place" },
+        { cell: "B127", label: "2. Name" }, { cell: "C127", label: "Father" }, { cell: "D127", label: "Title" }, { cell: "E127", label: "Place" }
+      ]},
+      { id: 17, title: "17. Reported By", fields: [
+        { cell: "D138", label: "Name" }, { cell: "D139", label: "Designation" }, { cell: "D140", label: "Date" }
+      ]}
+    ];
 
     const loginLayout = document.getElementById("login-layout");
     const homeLayout = document.getElementById("home-layout");
     const loginForm = document.getElementById("login-form");
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    const errorMsg = document.getElementById("error-msg");
-    const userDisplay = document.getElementById("user-display");
-    const logoutBtn = document.getElementById("logout-btn");
-    const dbStatus = document.getElementById("db-status");
-    const dbBody = document.getElementById("db-body");
-    const entryInput = document.getElementById("entry-data");
-    const addRecordBtn = document.getElementById("add-record-btn");
+    const sectionContainer = document.getElementById("section-container");
+    const sectionTitle = document.getElementById("section-title");
+    const progressFill = document.getElementById("progress-fill");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const statusMsg = document.getElementById("status-msg");
 
     function switchLayout(hideLayout, showLayout) {
-      hideLayout.classList.remove("active");
-      hideLayout.classList.add("hidden");
-
-      setTimeout(() => {
-        showLayout.classList.remove("hidden");
-        showLayout.classList.add("active");
-      }, 400); 
+      hideLayout.classList.remove("active"); hideLayout.classList.add("hidden");
+      setTimeout(() => { showLayout.classList.remove("hidden"); showLayout.classList.add("active"); }, 400); 
     }
 
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const selectedUser = usernameInput.value;
-      const enteredPassword = passwordInput.value;
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
 
-      if (userDatabase[selectedUser] && userDatabase[selectedUser] === enteredPassword) {
-        errorMsg.textContent = "";
-        currentUser = selectedUser;
-        userDisplay.textContent = currentUser;
-        
+      if (userDatabase[user] && userDatabase[user] === pass) {
+        currentUser = user;
+        document.getElementById("user-display").textContent = currentUser;
         switchLayout(loginLayout, homeLayout);
-        passwordInput.value = "";
-        
-        fetchUserData(currentUser);
+        renderStep(1);
       } else {
-        errorMsg.textContent = "Invalid credentials. Please try again.";
+        document.getElementById("error-msg").textContent = "Invalid credentials. Please try again.";
       }
     });
 
-    logoutBtn.addEventListener("click", () => {
-      currentUser = null;
-      dbBody.innerHTML = '<tr><td colspan="2">No records found</td></tr>';
-      switchLayout(homeLayout, loginLayout);
-    });
+    function renderStep(step) {
+      currentStep = step;
+      const config = sectionsConfig.find(s => s.id === step);
+      sectionTitle.textContent = config.title;
+      progressFill.style.width = `${(step / totalSteps) * 100}%`;
 
-    // READ: Direct fetch call without CORS trigger headers
-    async function fetchUserData(username) {
-      dbStatus.textContent = "Connecting to spreadsheet...";
+      sectionContainer.innerHTML = `<div class="input-grid">` + 
+        config.fields.map(f => `
+          <div class="input-group">
+            <label>${f.label} (${f.cell})</label>
+            <input type="text" data-cell="${f.cell}" id="field-${f.cell}" placeholder="${f.cell}" />
+          </div>
+        `).join('') + `</div>`;
+
+      prevBtn.style.display = step === 1 ? "none" : "block";
+      nextBtn.textContent = step === totalSteps ? "Finish & Submit" : "Next Section";
+      statusMsg.textContent = "";
+    }
+
+    nextBtn.addEventListener("click", async () => {
+      const inputs = sectionContainer.querySelectorAll("input");
+      const cellUpdates = [];
+
+      inputs.forEach(input => {
+        cellUpdates.push({ cell: input.getAttribute("data-cell"), value: input.value });
+      });
+
+      statusMsg.textContent = "Saving section...";
+
       try {
-        const response = await fetch(`${APPS_SCRIPT_URL}?user=${encodeURIComponent(username)}&action=read`);
-        const result = await response.json();
+        await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ user: currentUser, cellUpdates: cellUpdates })
+        });
 
-        if (result.status === "success") {
-          dbStatus.textContent = "Data successfully loaded";
-          renderTableData(result.data);
+        if (currentStep < totalSteps) {
+          renderStep(currentStep + 1);
         } else {
-          dbStatus.textContent = "Error: " + result.message;
+          statusMsg.textContent = "All 17 Sections Submitted Successfully!";
+          setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
         }
       } catch (err) {
-        dbStatus.textContent = "Failed to communicate with Apps Script. Check deployment.";
-      }
-    }
-
-    // CREATE
-    addRecordBtn.addEventListener("click", async () => {
-      const val = entryInput.value.trim();
-      if (!val || !currentUser) return;
-
-      dbStatus.textContent = "Adding row entry...";
-      try {
-        const payload = {
-          user: currentUser,
-          action: "append",
-          row: [val, new Date().toLocaleString()]
-        };
-
-        await sendPostRequest(payload);
-        entryInput.value = "";
-        fetchUserData(currentUser);
-      } catch (err) {
-        dbStatus.textContent = "Failed to add record.";
+        statusMsg.textContent = "Failed to save data. Try again.";
       }
     });
 
-    // MODIFY
-    async function modifyRecord(rowIndex, currentValue) {
-      const newValue = prompt("Modify record entry:", currentValue);
-      if (!newValue || newValue.trim() === "" || newValue === currentValue) return;
-
-      dbStatus.textContent = "Updating record...";
-      try {
-        const payload = {
-          user: currentUser,
-          action: "update",
-          rowIndex: rowIndex + 1,
-          colIndex: 1,
-          value: newValue.trim()
-        };
-
-        await sendPostRequest(payload);
-        fetchUserData(currentUser);
-      } catch (err) {
-        dbStatus.textContent = "Failed to modify record.";
-      }
-    }
-
-    // DELETE
-    async function deleteRecord(rowIndex) {
-      if (!confirm("Are you sure you want to delete this row?")) return;
-
-      dbStatus.textContent = "Deleting record...";
-      try {
-        const payload = {
-          user: currentUser,
-          action: "delete",
-          rowIndex: rowIndex + 1
-        };
-
-        await sendPostRequest(payload);
-        fetchUserData(currentUser);
-      } catch (err) {
-        dbStatus.textContent = "Failed to delete record.";
-      }
-    }
-
-    // Safe POST Helper (Omits headers to avoid triggering browser CORS OPTIONS preflight)
-    async function sendPostRequest(payload) {
-      const response = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-      return await response.json();
-    }
-
-    function renderTableData(data) {
-      if (!data || data.length === 0) {
-        dbBody.innerHTML = '<tr><td colspan="2">Sheet is currently empty</td></tr>';
-        return;
-      }
-
-      dbBody.innerHTML = data.map((row, index) => {
-        const rowData = Array.isArray(row) ? row.join(" | ") : row;
-        return `
-          <tr>
-            <td>${rowData}</td>
-            <td style="text-align: center;">
-              <button class="action-btn edit-btn" onclick="modifyRecord(${index}, '${rowData.replace(/'/g, "\\'")}')">Edit</button>
-              <button class="action-btn delete-btn" onclick="deleteRecord(${index})">Del</button>
-            </td>
-          </tr>
-        `;
-      }).join("");
-    }
-
-    document.querySelectorAll(".interactive-btn").forEach((button) => {
-      button.addEventListener("click", function (e) {
-        const circle = document.createElement("span");
-        const diameter = Math.max(this.clientWidth, this.clientHeight);
-        const radius = diameter / 2;
-
-        const rect = this.getBoundingClientRect();
-        circle.style.width = circle.style.height = `${diameter}px`;
-        circle.style.left = `${e.clientX - rect.left - radius}px`;
-        circle.style.top = `${e.clientY - rect.top - radius}px`;
-        circle.classList.add("ripple");
-
-        const existingRipple = this.querySelector(".ripple");
-        if (existingRipple) existingRipple.remove();
-
-        this.appendChild(circle);
-      });
+    prevBtn.addEventListener("click", () => {
+      if (currentStep > 1) renderStep(currentStep - 1);
     });
   </script>
 </body>
