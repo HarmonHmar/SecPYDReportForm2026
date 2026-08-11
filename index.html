@@ -63,17 +63,24 @@
     .progress-bar-container { width: 100%; background: rgba(255, 255, 255, 0.1); height: 8px; border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--success-color)); width: 5.88%; transition: width 0.3s ease; }
 
-    .section-title { color: var(--accent-cyan); font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; }
+    .section-header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; margin-bottom: 12px; }
+    .section-title { color: var(--accent-cyan); font-size: 1.1rem; font-weight: bold; }
+
+    .edit-mode-badge {
+      font-size: 0.75rem; background: rgba(76, 201, 240, 0.2); border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan); padding: 4px 8px; border-radius: 6px; font-weight: 600;
+    }
 
     .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 12px; }
     .input-group { display: flex; flex-direction: column; }
     .input-group label { font-size: 0.8rem; margin-bottom: 4px; color: var(--text-muted); }
-    .input-group input, .input-group select {
+    .input-group input, .input-group textarea, .input-group select {
       padding: 10px; background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--glass-border); border-radius: 8px;
       color: var(--text-main); font-size: 0.9rem; outline: none;
     }
-    .input-group input:focus, .input-group select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-glow); }
+    .input-group textarea { resize: vertical; min-height: 80px; }
+    .input-group input:focus, .input-group textarea:focus, .input-group select:focus { border-color: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-glow); }
     .input-group select option { background: #0b132b; color: var(--text-main); }
 
     .nav-buttons { display: flex; gap: 10px; margin-top: 16px; }
@@ -88,11 +95,6 @@
 
     .error-msg { color: var(--error-color); font-size: 0.85rem; min-height: 18px; margin-bottom: 8px; text-align: center; }
     .status-msg { color: var(--accent-cyan); font-size: 0.85rem; text-align: center; min-height: 18px; margin-top: 8px; font-weight: 600; }
-
-    /* Preview Card Styles */
-    .data-notice { background: rgba(76, 201, 240, 0.1); border: 1px solid var(--accent-cyan); padding: 12px; border-radius: 10px; margin-bottom: 16px; text-align: center; font-size: 0.9rem; }
-    .data-preview-list { max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px; }
-    .data-preview-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
   </style>
 </head>
 <body>
@@ -134,21 +136,6 @@
       </form>
     </main>
 
-    <!-- Data Summary View Layout -->
-    <main id="preview-layout" class="glass-card layout hidden">
-      <header>
-        <h2>Existing Data Found</h2>
-        <p class="subtitle">Saved records found for <span id="preview-user-display" style="color:var(--accent-cyan);"></span></p>
-      </header>
-
-      <div class="data-notice">Data was previously submitted for this account. Click below to edit or update.</div>
-      <div id="preview-data-list" class="data-preview-list"></div>
-
-      <div class="nav-buttons">
-        <button type="button" id="edit-form-btn" class="interactive-btn">Edit Form</button>
-      </div>
-    </main>
-
     <!-- 17-Section Form Layout -->
     <main id="home-layout" class="glass-card layout hidden">
       <header>
@@ -161,7 +148,11 @@
       </header>
 
       <form id="wizard-form">
-        <div class="section-title" id="section-title">Section 1: Local</div>
+        <div class="section-header-bar">
+          <div class="section-title" id="section-title">Section 1: Local</div>
+          <div id="edit-badge" class="edit-mode-badge" style="display:none;">✏️ Edit Form Active</div>
+        </div>
+        
         <div id="section-container"></div>
         <div id="status-msg" class="status-msg"></div>
 
@@ -205,20 +196,20 @@
         { cell: "C18", label: "Received HS (M)" }, { cell: "D18", label: "(F)" }, { cell: "E18", label: "Total" },
         { cell: "C19", label: "Total HS (M)" }, { cell: "D19", label: "(F)" }, { cell: "E19", label: "Total" }
       ]},
-      { id: 4, title: "4. Any Project?", fields: [{ cell: "C21", label: "Project Details" }] },
+      { id: 4, title: "4. Any Project?", fields: [{ cell: "C21", label: "Project Details", type: "textarea" }] },
       { id: 5, title: "5. Envelope", fields: [
         { cell: "B25", label: "1. Name" }, { cell: "C25", label: "Father" }, { cell: "D25", label: "Amount" },
         { cell: "B26", label: "2. Name" }, { cell: "C26", label: "Father" }, { cell: "D26", label: "Amount" },
         { cell: "B27", label: "3. Name" }, { cell: "C27", label: "Father" }, { cell: "D27", label: "Amount" }
       ]},
-      { id: 6, title: "6. Other Achievement", fields: [{ cell: "C29", label: "Achievement" }] },
-      { id: 7, title: "7. PYD Day?", fields: [{ cell: "C31", label: "PYD Day Details" }] },
+      { id: 6, title: "6. Other Achievement", fields: [{ cell: "C29", label: "Achievement", type: "textarea" }] },
+      { id: 7, title: "7. PYD Day?", fields: [{ cell: "C31", label: "PYD Day Details", type: "textarea" }] },
       { id: 8, title: "8. Roasted Rice", fields: [
         { cell: "B35", label: "1. Name" }, { cell: "C35", label: "Amount" },
         { cell: "B36", label: "2. Name" }, { cell: "C36", label: "Amount" },
         { cell: "B37", label: "3. Name" }, { cell: "C37", label: "Amount" }
       ]},
-      { id: 9, title: "9. Social Work Day?", fields: [{ cell: "C39", label: "Social Work Day Details" }] },
+      { id: 9, title: "9. Social Work Day?", fields: [{ cell: "C39", label: "Social Work Day Details", type: "textarea" }] },
       { id: 10, title: "10. Financial", fields: [
         { cell: "C43", label: "Local Target Inc" }, { cell: "D43", label: "Exp" },
         { cell: "C44", label: "Bamboo Project Inc" }, { cell: "D44", label: "Exp" },
@@ -259,11 +250,9 @@
     ];
 
     const loginLayout = document.getElementById("login-layout");
-    const previewLayout = document.getElementById("preview-layout");
     const homeLayout = document.getElementById("home-layout");
     const loginForm = document.getElementById("login-form");
     const loginBtn = document.getElementById("login-btn");
-    const editFormBtn = document.getElementById("edit-form-btn");
     const sectionContainer = document.getElementById("section-container");
     const sectionTitle = document.getElementById("section-title");
     const progressFill = document.getElementById("progress-fill");
@@ -271,6 +260,7 @@
     const nextBtn = document.getElementById("next-btn");
     const statusMsg = document.getElementById("status-msg");
     const errorMsg = document.getElementById("error-msg");
+    const editBadge = document.getElementById("edit-badge");
 
     function switchLayout(hideLayout, showLayout) {
       hideLayout.classList.remove("active"); hideLayout.classList.add("hidden");
@@ -285,11 +275,10 @@
       if (userDatabase[user] && userDatabase[user] === pass) {
         currentUser = user;
         document.getElementById("user-display").textContent = currentUser;
-        document.getElementById("preview-user-display").textContent = currentUser;
 
         loginBtn.disabled = true;
         errorMsg.style.color = "var(--accent-cyan)";
-        errorMsg.textContent = "Checking existing data...";
+        errorMsg.textContent = "Checking Google Sheet records...";
 
         try {
           const res = await fetch(`${APPS_SCRIPT_URL}?user=${encodeURIComponent(currentUser)}`);
@@ -298,19 +287,22 @@
           loginBtn.disabled = false;
           errorMsg.textContent = "";
 
-          if (result.status === "success" && result.hasData) {
+          if (result.status === "success" && Object.keys(result.data).length > 0) {
             loadedSheetData = result.data;
-            renderDataPreview(result.data);
-            switchLayout(loginLayout, previewLayout);
+            editBadge.style.display = "block";
           } else {
             loadedSheetData = {};
-            switchLayout(loginLayout, homeLayout);
-            renderStep(1);
+            editBadge.style.display = "none";
           }
+
+          switchLayout(loginLayout, homeLayout);
+          renderStep(1);
+
         } catch (err) {
           loginBtn.disabled = false;
           errorMsg.textContent = "";
           loadedSheetData = {};
+          editBadge.style.display = "none";
           switchLayout(loginLayout, homeLayout);
           renderStep(1);
         }
@@ -319,21 +311,6 @@
         errorMsg.style.color = "var(--error-color)";
         errorMsg.textContent = "Invalid credentials. Please try again.";
       }
-    });
-
-    function renderDataPreview(data) {
-      const previewList = document.getElementById("preview-data-list");
-      previewList.innerHTML = Object.keys(data).map(cell => `
-        <div class="data-preview-item">
-          <span style="color:var(--text-muted);">Cell ${cell}:</span>
-          <span style="font-weight:600;">${data[cell]}</span>
-        </div>
-      `).join('');
-    }
-
-    editFormBtn.addEventListener("click", () => {
-      switchLayout(previewLayout, homeLayout);
-      renderStep(1);
     });
 
     function renderStep(step) {
@@ -345,12 +322,21 @@
       sectionContainer.innerHTML = `<div class="input-grid">` + 
         config.fields.map(f => {
           const existingValue = loadedSheetData[f.cell] || "";
-          return `
-            <div class="input-group">
-              <label>${f.label} (${f.cell})</label>
-              <input type="text" data-cell="${f.cell}" id="field-${f.cell}" value="${existingValue}" placeholder="${f.cell}" />
-            </div>
-          `;
+          if (f.type === "textarea") {
+            return `
+              <div class="input-group" style="grid-column: 1 / -1;">
+                <label>${f.label} (${f.cell})</label>
+                <textarea data-cell="${f.cell}" id="field-${f.cell}" placeholder="${f.cell}">${existingValue}</textarea>
+              </div>
+            `;
+          } else {
+            return `
+              <div class="input-group">
+                <label>${f.label} (${f.cell})</label>
+                <input type="text" data-cell="${f.cell}" id="field-${f.cell}" value="${existingValue}" placeholder="${f.cell}" />
+              </div>
+            `;
+          }
         }).join('') + `</div>`;
 
       prevBtn.style.display = step === 1 ? "none" : "block";
@@ -368,7 +354,7 @@
         return;
       }
 
-      const inputs = sectionContainer.querySelectorAll("input");
+      const inputs = sectionContainer.querySelectorAll("input, textarea");
       const cellUpdates = [];
 
       inputs.forEach(input => {
