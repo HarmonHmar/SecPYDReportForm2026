@@ -81,13 +81,14 @@
     .interactive-btn {
       flex: 1; padding: 12px; background: linear-gradient(135deg, #4cc9f0, #4361ee);
       border: none; border-radius: 10px; color: #fff; font-size: 0.9rem; font-weight: 600;
-      cursor: pointer; overflow: hidden; position: relative; transition: transform 0.2s;
+      cursor: pointer; overflow: hidden; position: relative; transition: transform 0.2s, opacity 0.2s;
     }
+    .interactive-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .interactive-btn.secondary { background: rgba(255, 255, 255, 0.1); }
-    .interactive-btn:active { transform: translateY(1px); }
+    .interactive-btn:active:not(:disabled) { transform: translateY(1px); }
 
     .error-msg { color: var(--error-color); font-size: 0.85rem; min-height: 18px; margin-bottom: 8px; text-align: center; }
-    .status-msg { color: var(--accent-cyan); font-size: 0.8rem; text-align: center; min-height: 16px; margin-top: 8px; }
+    .status-msg { color: var(--accent-cyan); font-size: 0.85rem; text-align: center; min-height: 18px; margin-top: 8px; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -283,7 +284,10 @@
 
       prevBtn.style.display = step === 1 ? "none" : "block";
       nextBtn.textContent = step === totalSteps ? "Finish & Submit" : "Next Section";
+      statusMsg.style.color = "var(--accent-cyan)";
       statusMsg.textContent = "";
+      nextBtn.disabled = false;
+      prevBtn.disabled = false;
     }
 
     nextBtn.addEventListener("click", async () => {
@@ -294,22 +298,44 @@
         cellUpdates.push({ cell: input.getAttribute("data-cell"), value: input.value });
       });
 
-      statusMsg.textContent = "Saving section...";
+      // Disable buttons & show loading state
+      nextBtn.disabled = true;
+      prevBtn.disabled = true;
+      statusMsg.style.color = "var(--accent-cyan)";
+      statusMsg.textContent = "Saving to Google Sheets...";
 
       try {
-        await fetch(APPS_SCRIPT_URL, {
+        const response = await fetch(APPS_SCRIPT_URL, {
           method: "POST",
           body: JSON.stringify({ user: currentUser, cellUpdates: cellUpdates })
         });
 
-        if (currentStep < totalSteps) {
-          renderStep(currentStep + 1);
+        const result = await response.json();
+
+        // ONLY PROCEED IF DATABASE RETURNED SUCCESS
+        if (result.status === "success") {
+          statusMsg.style.color = "var(--accent-cyan)";
+          statusMsg.textContent = "Saved successfully!";
+
+          setTimeout(() => {
+            if (currentStep < totalSteps) {
+              renderStep(currentStep + 1);
+            } else {
+              statusMsg.textContent = "All 17 Sections Submitted Successfully!";
+              setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
+            }
+          }, 400);
+
         } else {
-          statusMsg.textContent = "All 17 Sections Submitted Successfully!";
-          setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
+          throw new Error(result.message || "Database failed to confirm save.");
         }
+
       } catch (err) {
-        statusMsg.textContent = "Failed to save data. Try again.";
+        // STAY ON CURRENT SECTION AND DISPLAY ERROR
+        statusMsg.style.color = "var(--error-color)";
+        statusMsg.textContent = "Error saving data. Please click 'Next Section' to try again.";
+        nextBtn.disabled = false;
+        prevBtn.disabled = false;
       }
     });
 
