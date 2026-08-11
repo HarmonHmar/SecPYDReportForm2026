@@ -60,7 +60,6 @@
     .subtitle { color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 16px; }
     .user-welcome { color: var(--accent-cyan); font-weight: 600; text-align: center; margin-bottom: 12px; font-size: 0.9rem; }
 
-    /* Progress Bar */
     .progress-bar-container { width: 100%; background: rgba(255, 255, 255, 0.1); height: 8px; border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--success-color)); width: 5.88%; transition: width 0.3s ease; }
 
@@ -130,7 +129,7 @@
       </form>
     </main>
 
-    <!-- 17-Section Wizard Form Layout -->
+    <!-- 17-Section Form Layout -->
     <main id="home-layout" class="glass-card layout hidden">
       <header>
         <h2>REPORT FORM 2026</h2>
@@ -295,38 +294,46 @@
       const cellUpdates = [];
 
       inputs.forEach(input => {
-        cellUpdates.push({ cell: input.getAttribute("data-cell"), value: input.value });
+        if (input.value.trim() !== "") {
+          cellUpdates.push({ cell: input.getAttribute("data-cell"), value: input.value.trim() });
+        }
       });
 
       nextBtn.disabled = true;
       prevBtn.disabled = true;
       statusMsg.style.color = "var(--accent-cyan)";
-      statusMsg.textContent = "Saving to Google Sheets...";
+      statusMsg.textContent = "Writing to Google Sheets...";
 
       try {
-        // Send POST payload without CORS block
-        await fetch(APPS_SCRIPT_URL, {
+        const response = await fetch(APPS_SCRIPT_URL, {
           method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({ user: currentUser, cellUpdates: cellUpdates })
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ user: currentUser, cellUpdates: cellUpdates }),
+          redirect: "follow"
         });
 
-        statusMsg.style.color = "var(--accent-cyan)";
-        statusMsg.textContent = "Saved successfully!";
+        const resText = await response.text();
+        const result = JSON.parse(resText);
 
-        setTimeout(() => {
-          if (currentStep < totalSteps) {
-            renderStep(currentStep + 1);
-          } else {
-            statusMsg.textContent = "All 17 Sections Submitted Successfully!";
-            setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
-          }
-        }, 500);
+        if (result.status === "success") {
+          statusMsg.style.color = "var(--accent-cyan)";
+          statusMsg.textContent = "Saved successfully!";
+
+          setTimeout(() => {
+            if (currentStep < totalSteps) {
+              renderStep(currentStep + 1);
+            } else {
+              statusMsg.textContent = "All 17 Sections Submitted Successfully!";
+              setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
+            }
+          }, 400);
+        } else {
+          throw new Error(result.message || "Failed to write data");
+        }
 
       } catch (err) {
         statusMsg.style.color = "var(--error-color)";
-        statusMsg.textContent = "Network error. Please try clicking 'Next Section' again.";
+        statusMsg.textContent = "Error: " + err.message + ". Please try again.";
         nextBtn.disabled = false;
         prevBtn.disabled = false;
       }
