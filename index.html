@@ -129,7 +129,7 @@
       </form>
     </main>
 
-    <!-- 17-Section Form Layout -->
+    <!-- 17-Section Wizard Form Layout -->
     <main id="home-layout" class="glass-card layout hidden">
       <header>
         <h2>REPORT FORM 2026</h2>
@@ -290,6 +290,12 @@
     }
 
     nextBtn.addEventListener("click", async () => {
+      if (!currentUser) {
+        statusMsg.style.color = "var(--error-color)";
+        statusMsg.textContent = "Session expired. Please log in again.";
+        return;
+      }
+
       const inputs = sectionContainer.querySelectorAll("input");
       const cellUpdates = [];
 
