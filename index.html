@@ -88,6 +88,11 @@
 
     .error-msg { color: var(--error-color); font-size: 0.85rem; min-height: 18px; margin-bottom: 8px; text-align: center; }
     .status-msg { color: var(--accent-cyan); font-size: 0.85rem; text-align: center; min-height: 18px; margin-top: 8px; font-weight: 600; }
+
+    /* Preview Card Styles */
+    .data-notice { background: rgba(76, 201, 240, 0.1); border: 1px solid var(--accent-cyan); padding: 12px; border-radius: 10px; margin-bottom: 16px; text-align: center; font-size: 0.9rem; }
+    .data-preview-list { max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px; }
+    .data-preview-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
   </style>
 </head>
 <body>
@@ -125,8 +130,23 @@
 
         <div id="error-msg" class="error-msg"></div>
 
-        <button type="submit" class="interactive-btn"><span>Log In</span></button>
+        <button type="submit" id="login-btn" class="interactive-btn"><span>Log In</span></button>
       </form>
+    </main>
+
+    <!-- Data Summary View Layout -->
+    <main id="preview-layout" class="glass-card layout hidden">
+      <header>
+        <h2>Existing Data Found</h2>
+        <p class="subtitle">Saved records found for <span id="preview-user-display" style="color:var(--accent-cyan);"></span></p>
+      </header>
+
+      <div class="data-notice">Data was previously submitted for this account. Click below to edit or update.</div>
+      <div id="preview-data-list" class="data-preview-list"></div>
+
+      <div class="nav-buttons">
+        <button type="button" id="edit-form-btn" class="interactive-btn">Edit Form</button>
+      </div>
     </main>
 
     <!-- 17-Section Form Layout -->
@@ -155,7 +175,7 @@
   </div>
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPwsbi0-losvArhnYsrgTnSFX5f4CoHgo6U6iup-VuUpaonXnXeUP65zrD3GWc9cvGCg/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyHSlcJCxnM3NzBSRSTV5pAfhe83RR7Cgalc8jm1lsQHXePSY1pIUaG5nXNYHtrVB3uw/exec";
 
     const userDatabase = {
       Gilgal: "1111", Tabernacle: "2222", Jorkha: "3333", Hmarkhawlien: "4444",
@@ -164,6 +184,7 @@
 
     let currentUser = null;
     let currentStep = 1;
+    let loadedSheetData = {};
     const totalSteps = 17;
 
     const sectionsConfig = [
@@ -238,21 +259,25 @@
     ];
 
     const loginLayout = document.getElementById("login-layout");
+    const previewLayout = document.getElementById("preview-layout");
     const homeLayout = document.getElementById("home-layout");
     const loginForm = document.getElementById("login-form");
+    const loginBtn = document.getElementById("login-btn");
+    const editFormBtn = document.getElementById("edit-form-btn");
     const sectionContainer = document.getElementById("section-container");
     const sectionTitle = document.getElementById("section-title");
     const progressFill = document.getElementById("progress-fill");
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
     const statusMsg = document.getElementById("status-msg");
+    const errorMsg = document.getElementById("error-msg");
 
     function switchLayout(hideLayout, showLayout) {
       hideLayout.classList.remove("active"); hideLayout.classList.add("hidden");
       setTimeout(() => { showLayout.classList.remove("hidden"); showLayout.classList.add("active"); }, 400); 
     }
 
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const user = document.getElementById("username").value;
       const pass = document.getElementById("password").value;
@@ -260,11 +285,55 @@
       if (userDatabase[user] && userDatabase[user] === pass) {
         currentUser = user;
         document.getElementById("user-display").textContent = currentUser;
-        switchLayout(loginLayout, homeLayout);
-        renderStep(1);
+        document.getElementById("preview-user-display").textContent = currentUser;
+
+        loginBtn.disabled = true;
+        errorMsg.style.color = "var(--accent-cyan)";
+        errorMsg.textContent = "Checking existing data...";
+
+        try {
+          const res = await fetch(`${APPS_SCRIPT_URL}?user=${encodeURIComponent(currentUser)}`);
+          const result = await res.json();
+
+          loginBtn.disabled = false;
+          errorMsg.textContent = "";
+
+          if (result.status === "success" && result.hasData) {
+            loadedSheetData = result.data;
+            renderDataPreview(result.data);
+            switchLayout(loginLayout, previewLayout);
+          } else {
+            loadedSheetData = {};
+            switchLayout(loginLayout, homeLayout);
+            renderStep(1);
+          }
+        } catch (err) {
+          loginBtn.disabled = false;
+          errorMsg.textContent = "";
+          loadedSheetData = {};
+          switchLayout(loginLayout, homeLayout);
+          renderStep(1);
+        }
+
       } else {
-        document.getElementById("error-msg").textContent = "Invalid credentials. Please try again.";
+        errorMsg.style.color = "var(--error-color)";
+        errorMsg.textContent = "Invalid credentials. Please try again.";
       }
+    });
+
+    function renderDataPreview(data) {
+      const previewList = document.getElementById("preview-data-list");
+      previewList.innerHTML = Object.keys(data).map(cell => `
+        <div class="data-preview-item">
+          <span style="color:var(--text-muted);">Cell ${cell}:</span>
+          <span style="font-weight:600;">${data[cell]}</span>
+        </div>
+      `).join('');
+    }
+
+    editFormBtn.addEventListener("click", () => {
+      switchLayout(previewLayout, homeLayout);
+      renderStep(1);
     });
 
     function renderStep(step) {
@@ -274,12 +343,15 @@
       progressFill.style.width = `${(step / totalSteps) * 100}%`;
 
       sectionContainer.innerHTML = `<div class="input-grid">` + 
-        config.fields.map(f => `
-          <div class="input-group">
-            <label>${f.label} (${f.cell})</label>
-            <input type="text" data-cell="${f.cell}" id="field-${f.cell}" placeholder="${f.cell}" />
-          </div>
-        `).join('') + `</div>`;
+        config.fields.map(f => {
+          const existingValue = loadedSheetData[f.cell] || "";
+          return `
+            <div class="input-group">
+              <label>${f.label} (${f.cell})</label>
+              <input type="text" data-cell="${f.cell}" id="field-${f.cell}" value="${existingValue}" placeholder="${f.cell}" />
+            </div>
+          `;
+        }).join('') + `</div>`;
 
       prevBtn.style.display = step === 1 ? "none" : "block";
       nextBtn.textContent = step === totalSteps ? "Finish & Submit" : "Next Section";
@@ -300,9 +372,10 @@
       const cellUpdates = [];
 
       inputs.forEach(input => {
-        if (input.value.trim() !== "") {
-          cellUpdates.push({ cell: input.getAttribute("data-cell"), value: input.value.trim() });
-        }
+        const val = input.value.trim();
+        const cell = input.getAttribute("data-cell");
+        cellUpdates.push({ cell: cell, value: val });
+        loadedSheetData[cell] = val; // Store back into cache
       });
 
       nextBtn.disabled = true;
@@ -311,7 +384,6 @@
       statusMsg.textContent = "Writing to Google Sheets...";
 
       try {
-        // Send payload cleanly
         await fetch(APPS_SCRIPT_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
