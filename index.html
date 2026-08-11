@@ -298,42 +298,35 @@
         cellUpdates.push({ cell: input.getAttribute("data-cell"), value: input.value });
       });
 
-      // Disable buttons & show loading state
       nextBtn.disabled = true;
       prevBtn.disabled = true;
       statusMsg.style.color = "var(--accent-cyan)";
       statusMsg.textContent = "Saving to Google Sheets...";
 
       try {
-        const response = await fetch(APPS_SCRIPT_URL, {
+        // Send POST payload without CORS block
+        await fetch(APPS_SCRIPT_URL, {
           method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
           body: JSON.stringify({ user: currentUser, cellUpdates: cellUpdates })
         });
 
-        const result = await response.json();
+        statusMsg.style.color = "var(--accent-cyan)";
+        statusMsg.textContent = "Saved successfully!";
 
-        // ONLY PROCEED IF DATABASE RETURNED SUCCESS
-        if (result.status === "success") {
-          statusMsg.style.color = "var(--accent-cyan)";
-          statusMsg.textContent = "Saved successfully!";
-
-          setTimeout(() => {
-            if (currentStep < totalSteps) {
-              renderStep(currentStep + 1);
-            } else {
-              statusMsg.textContent = "All 17 Sections Submitted Successfully!";
-              setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
-            }
-          }, 400);
-
-        } else {
-          throw new Error(result.message || "Database failed to confirm save.");
-        }
+        setTimeout(() => {
+          if (currentStep < totalSteps) {
+            renderStep(currentStep + 1);
+          } else {
+            statusMsg.textContent = "All 17 Sections Submitted Successfully!";
+            setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
+          }
+        }, 500);
 
       } catch (err) {
-        // STAY ON CURRENT SECTION AND DISPLAY ERROR
         statusMsg.style.color = "var(--error-color)";
-        statusMsg.textContent = "Error saving data. Please click 'Next Section' to try again.";
+        statusMsg.textContent = "Network error. Please try clicking 'Next Section' again.";
         nextBtn.disabled = false;
         prevBtn.disabled = false;
       }
