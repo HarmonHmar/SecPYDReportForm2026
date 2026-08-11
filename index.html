@@ -1,51 +1,50 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#061426">
-<meta name="description" content="Online Report Form Portal">
 
-<title>Online Report Portal</title>
+<title>Online Report Form</title>
 
 <style>
 /* =========================================================
-   ROOT
+   GLOBAL
 ========================================================= */
-:root {
-    --bg: #030b18;
-    --bg-2: #07172c;
-    --glass: rgba(13, 35, 61, 0.58);
-    --glass-light: rgba(255,255,255,0.07);
-    --border: rgba(255,255,255,0.12);
-    --text: #f4f8ff;
-    --muted: #9db0c9;
-    --primary: #3195ff;
-    --primary-dark: #146bc5;
-    --success: #28d17c;
-    --warning: #ffbd4a;
-    --danger: #ff5f6d;
-    --shadow: 0 25px 70px rgba(0,0,0,0.45);
-    --radius: 22px;
-    --transition: 0.35s ease;
-}
 
-/* =========================================================
-   RESET
-========================================================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
+:root {
+    --bg-1: #020817;
+    --bg-2: #06152e;
+    --bg-3: #0a2345;
+
+    --glass: rgba(15, 38, 72, 0.55);
+    --glass-light: rgba(255, 255, 255, 0.07);
+    --glass-border: rgba(255, 255, 255, 0.13);
+
+    --text: #f4f8ff;
+    --muted: #9fb1c9;
+
+    --primary: #2588ff;
+    --primary-dark: #1265c5;
+
+    --success: #28d17c;
+    --danger: #ff5d6c;
+    --warning: #ffc857;
+
+    --shadow: 0 25px 70px rgba(0, 0, 0, 0.40);
+}
+
+html,
+body {
+    min-height: 100%;
 }
 
 body {
-    min-height: 100vh;
     font-family:
         Inter,
         ui-sans-serif,
@@ -54,12 +53,21 @@ body {
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+
     color: var(--text);
+
     background:
-        radial-gradient(circle at 10% 20%, rgba(28, 115, 220, 0.18), transparent 30%),
-        radial-gradient(circle at 90% 10%, rgba(0, 170, 255, 0.12), transparent 25%),
-        radial-gradient(circle at 50% 100%, rgba(0, 73, 160, 0.18), transparent 35%),
-        linear-gradient(135deg, #020813, #06172b 55%, #020a16);
+        radial-gradient(circle at 15% 20%, rgba(37, 136, 255, 0.18), transparent 30%),
+        radial-gradient(circle at 85% 75%, rgba(0, 100, 255, 0.15), transparent 30%),
+        linear-gradient(
+            135deg,
+            var(--bg-1),
+            var(--bg-2),
+            var(--bg-3),
+            var(--bg-1)
+        );
+
+    background-attachment: fixed;
     overflow-x: hidden;
 }
 
@@ -74,13 +82,10 @@ button {
     cursor: pointer;
 }
 
-.hidden {
-    display: none !important;
-}
-
 /* =========================================================
-   BACKGROUND EFFECTS
+   BACKGROUND DECORATION
 ========================================================= */
+
 .background {
     position: fixed;
     inset: 0;
@@ -92,203 +97,146 @@ button {
 .orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(4px);
+    filter: blur(5px);
     opacity: 0.45;
-    animation: floatOrb 10s ease-in-out infinite;
+    animation: floating 10s ease-in-out infinite;
 }
 
 .orb.one {
-    width: 300px;
-    height: 300px;
-    background: rgba(20, 115, 255, 0.20);
-    top: -80px;
-    left: -70px;
+    width: 280px;
+    height: 280px;
+    background: #075bc4;
+    top: -100px;
+    left: -80px;
 }
 
 .orb.two {
-    width: 250px;
-    height: 250px;
-    background: rgba(0, 196, 255, 0.13);
-    right: -80px;
+    width: 220px;
+    height: 220px;
+    background: #06377e;
+    right: -70px;
     top: 30%;
-    animation-delay: -3s;
+    animation-delay: 2s;
 }
 
 .orb.three {
-    width: 350px;
-    height: 350px;
-    background: rgba(37, 92, 190, 0.14);
-    bottom: -180px;
-    left: 30%;
-    animation-delay: -6s;
+    width: 170px;
+    height: 170px;
+    background: #147cf5;
+    left: 35%;
+    bottom: -70px;
+    animation-delay: 4s;
 }
 
-@keyframes floatOrb {
-    0%, 100% {
-        transform: translate3d(0,0,0) scale(1);
+@keyframes floating {
+    0%,
+    100% {
+        transform: translate(0, 0);
     }
+
     50% {
-        transform: translate3d(25px,-20px,0) scale(1.08);
+        transform: translate(20px, -25px);
     }
+}
+
+/* =========================================================
+   APP CONTAINER
+========================================================= */
+
+.app {
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
 }
 
 /* =========================================================
    GLASS
 ========================================================= */
+
 .glass {
-    background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.075),
-        rgba(255,255,255,0.025)
-    );
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
-}
-
-/* =========================================================
-   PAGE TRANSITIONS
-========================================================= */
-.layout {
-    animation: pageIn 0.65s ease forwards;
-}
-
-.layout.fade-out {
-    animation: pageOut 0.35s ease forwards;
-}
-
-@keyframes pageIn {
-    from {
-        opacity: 0;
-        transform: translateY(15px) scale(0.985);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes pageOut {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-12px) scale(0.985);
-    }
+    box-shadow: var(--shadow);
 }
 
 /* =========================================================
    LOGIN
 ========================================================= */
-#loginLayout {
-    min-height: 100vh;
+
+#loginPage {
+    min-height: calc(100vh - 40px);
+
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 25px;
+    align-items: center;
+
+    transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
 }
 
-.login-wrapper {
-    width: 100%;
-    max-width: 1050px;
-    min-height: 620px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-radius: 30px;
+.login-card {
+    width: min(430px, 100%);
+    padding: 42px 34px;
+
+    border-radius: 28px;
+
+    position: relative;
     overflow: hidden;
 }
 
-.login-info {
-    padding: 65px;
+.login-card::before {
+    content: "";
+
+    position: absolute;
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
+
+    background: rgba(37, 136, 255, 0.13);
+
+    top: -90px;
+    right: -70px;
+
+    pointer-events: none;
+}
+
+.logo {
+    width: 72px;
+    height: 72px;
+
+    border-radius: 22px;
+
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
+
     background:
         linear-gradient(
-            145deg,
-            rgba(20, 103, 192, 0.25),
-            rgba(4, 17, 34, 0.35)
+            135deg,
+            rgba(37, 136, 255, 0.9),
+            rgba(9, 77, 158, 0.8)
         );
+
+    box-shadow:
+        0 15px 40px rgba(37, 136, 255, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+    font-size: 28px;
+    font-weight: 800;
+
+    margin-bottom: 24px;
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 35px;
-}
-
-.brand-icon {
-    width: 55px;
-    height: 55px;
-    display: grid;
-    place-items: center;
-    border-radius: 17px;
-    font-size: 25px;
-    background: linear-gradient(135deg, #3195ff, #0758ad);
-    box-shadow: 0 12px 30px rgba(49,149,255,0.25);
-}
-
-.brand h1 {
-    font-size: 21px;
-}
-
-.login-info h2 {
-    font-size: clamp(34px, 4vw, 55px);
-    line-height: 1.05;
-    margin-bottom: 20px;
-    letter-spacing: -2px;
-}
-
-.login-info h2 span {
-    color: #53aaff;
-}
-
-.login-info p {
-    color: var(--muted);
-    line-height: 1.8;
-    max-width: 450px;
-}
-
-.feature-list {
-    display: grid;
-    gap: 14px;
-    margin-top: 35px;
-}
-
-.feature {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #c9d8ea;
-}
-
-.feature-icon {
-    width: 30px;
-    height: 30px;
-    display: grid;
-    place-items: center;
-    border-radius: 9px;
-    background: rgba(49,149,255,0.13);
-    color: #57acff;
-}
-
-.login-panel {
-    padding: 60px 55px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.login-panel h2 {
-    font-size: 31px;
+.login-card h1 {
+    font-size: 29px;
     margin-bottom: 8px;
 }
 
-.login-panel > p {
+.login-card > p {
     color: var(--muted);
     margin-bottom: 30px;
 }
@@ -296,86 +244,108 @@ button {
 /* =========================================================
    FORM ELEMENTS
 ========================================================= */
+
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 19px;
 }
 
 .form-group label {
     display: block;
-    font-size: 13px;
+
+    color: #d9e6f8;
+
+    font-size: 14px;
     font-weight: 600;
-    color: #c9d8ea;
-    margin-bottom: 9px;
+
+    margin-bottom: 8px;
 }
 
-.input-wrap {
+.input-wrapper {
     position: relative;
 }
 
-.input-icon {
+.input-wrapper span {
     position: absolute;
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #7190b3;
+
+    opacity: 0.6;
+
     pointer-events: none;
 }
 
-input,
-textarea,
-select {
+.form-control {
     width: 100%;
-    color: var(--text);
-    background: rgba(2, 13, 27, 0.58);
-    border: 1px solid rgba(255,255,255,0.11);
+
+    padding: 14px 15px 14px 45px;
+
+    color: white;
+
+    background: rgba(0, 9, 25, 0.35);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    border-radius: 14px;
+
     outline: none;
-    border-radius: 13px;
-    padding: 14px 15px;
-    transition: var(--transition);
+
+    transition:
+        border 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
 }
 
-.input-wrap input {
-    padding-left: 45px;
-}
-
-textarea {
-    resize: vertical;
+textarea.form-control {
     min-height: 130px;
+    resize: vertical;
+    padding-left: 15px;
 }
 
-select {
-    appearance: none;
+select.form-control {
+    padding-left: 15px;
 }
 
-input::placeholder,
-textarea::placeholder {
-    color: #607895;
+.form-control::placeholder {
+    color: #7589a5;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
-    border-color: rgba(49,149,255,0.75);
+.form-control:focus {
+    border-color: rgba(37, 136, 255, 0.75);
+
+    background: rgba(0, 12, 30, 0.55);
+
     box-shadow:
-        0 0 0 4px rgba(49,149,255,0.10),
-        0 8px 25px rgba(0,0,0,0.15);
+        0 0 0 4px rgba(37, 136, 255, 0.09),
+        0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* =========================================================
-   BUTTONS + CLICK EFFECT
+   BUTTONS
 ========================================================= */
+
 .btn {
+    border: none;
+
+    padding: 13px 20px;
+
+    border-radius: 14px;
+
+    color: white;
+
+    font-weight: 700;
+
     position: relative;
     overflow: hidden;
-    border: 0;
-    border-radius: 13px;
-    padding: 14px 20px;
-    color: white;
-    font-weight: 700;
+
     transition:
-        transform 0.2s ease,
-        box-shadow 0.3s ease,
-        background 0.3s ease;
+        transform 0.18s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
 }
 
 .btn:active {
@@ -383,30 +353,60 @@ select:focus {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #3195ff, #1165bf);
-    box-shadow: 0 12px 30px rgba(30,120,220,0.22);
-}
+    width: 100%;
 
-.btn-primary:hover {
-    box-shadow: 0 16px 40px rgba(30,120,220,0.35);
-    transform: translateY(-2px);
+    background:
+        linear-gradient(
+            135deg,
+            #2588ff,
+            #1265c5
+        );
+
+    box-shadow:
+        0 12px 30px rgba(37, 136, 255, 0.25);
 }
 
 .btn-secondary {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.btn-secondary:hover {
-    background: rgba(255,255,255,0.11);
+.btn-success {
+    background:
+        linear-gradient(
+            135deg,
+            #26c979,
+            #149b59
+        );
 }
+
+.btn-danger {
+    background:
+        linear-gradient(
+            135deg,
+            #ff6876,
+            #d83b4b
+        );
+}
+
+.btn-small {
+    padding: 10px 15px;
+    font-size: 13px;
+}
+
+/* Ripple */
 
 .ripple {
     position: absolute;
+
     border-radius: 50%;
+
     transform: scale(0);
-    animation: rippleAnimation 0.65s linear;
-    background: rgba(255,255,255,0.35);
+
+    animation: rippleAnimation 0.6s linear;
+
+    background: rgba(255, 255, 255, 0.30);
+
     pointer-events: none;
 }
 
@@ -417,688 +417,713 @@ select:focus {
     }
 }
 
-.full-width {
-    width: 100%;
-}
+/* =========================================================
+   LOGIN ERROR
+========================================================= */
 
 .error-message {
-    min-height: 22px;
-    margin-bottom: 8px;
-    color: #ff7782;
-    font-size: 13px;
-}
-
-/* =========================================================
-   APP
-========================================================= */
-#appLayout {
-    min-height: 100vh;
-}
-
-.app-shell {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 255px 1fr;
-}
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-.sidebar {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    padding: 25px 17px;
-    border-right: 1px solid rgba(255,255,255,0.08);
-    background: rgba(2, 12, 25, 0.50);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.sidebar-brand {
-    padding: 10px 12px 25px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.sidebar-brand .brand-icon {
-    width: 44px;
-    height: 44px;
-    font-size: 19px;
-}
-
-.sidebar-brand strong {
-    font-size: 15px;
-}
-
-.sidebar-nav {
-    display: grid;
-    gap: 7px;
-    margin-top: 15px;
-}
-
-.nav-btn {
-    width: 100%;
-    padding: 13px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border: 0;
-    border-radius: 12px;
-    background: transparent;
-    color: #8fa5c0;
-    text-align: left;
-    transition: var(--transition);
-}
-
-.nav-btn:hover {
-    background: rgba(255,255,255,0.055);
-    color: white;
-}
-
-.nav-btn.active {
-    background: linear-gradient(
-        90deg,
-        rgba(49,149,255,0.18),
-        rgba(49,149,255,0.05)
-    );
-    color: #5caeff;
-}
-
-.sidebar-bottom {
-    position: absolute;
-    left: 17px;
-    right: 17px;
-    bottom: 22px;
-}
-
-.user-mini {
-    padding: 13px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-radius: 15px;
-    background: rgba(255,255,255,0.045);
-}
-
-.avatar {
-    width: 38px;
-    height: 38px;
-    flex: 0 0 auto;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #2384e8, #083b78);
-    font-weight: 800;
-}
-
-.user-mini-info {
-    min-width: 0;
-}
-
-.user-mini-info strong,
-.user-mini-info span {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.user-mini-info strong {
-    font-size: 13px;
-}
-
-.user-mini-info span {
-    margin-top: 3px;
-    color: #7288a4;
-    font-size: 11px;
-}
-
-/* =========================================================
-   MAIN
-========================================================= */
-.main {
-    min-width: 0;
-    padding: 25px;
-}
-
-.topbar {
-    min-height: 65px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.mobile-menu {
     display: none;
-}
 
-.page-title h1 {
-    font-size: 27px;
-    margin-bottom: 4px;
-}
+    padding: 11px 13px;
 
-.page-title p {
-    color: var(--muted);
+    margin-bottom: 17px;
+
+    border-radius: 12px;
+
+    background: rgba(255, 93, 108, 0.12);
+
+    border: 1px solid rgba(255, 93, 108, 0.25);
+
+    color: #ff9ca5;
+
     font-size: 13px;
 }
 
-.top-user {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.error-message.show {
+    display: block;
+
+    animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-6px);
+    }
+
+    75% {
+        transform: translateX(6px);
+    }
 }
 
 /* =========================================================
-   CONTENT SECTIONS
+   MAIN APP
 ========================================================= */
-.app-section {
+
+#mainPage {
     display: none;
-    animation: sectionIn 0.45s ease;
+
+    min-height: calc(100vh - 40px);
+
+    opacity: 0;
 }
 
-.app-section.active {
+#mainPage.visible {
     display: block;
+
+    animation: pageFadeIn 0.6s ease forwards;
 }
 
-@keyframes sectionIn {
+@keyframes pageFadeIn {
     from {
         opacity: 0;
         transform: translateY(12px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
+.page-exit {
+    animation: pageFadeOut 0.45s ease forwards;
+}
+
+@keyframes pageFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+    max-width: 1400px;
+    margin: auto;
+
+    padding: 17px 20px;
+
+    border-radius: 22px;
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.brand-icon {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 14px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2588ff,
+            #0d58a9
+        );
+
+    font-weight: 800;
+}
+
+.brand-text h2 {
+    font-size: 17px;
+}
+
+.brand-text small {
+    color: var(--muted);
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-badge {
+    padding: 8px 12px;
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    font-size: 13px;
+}
+
 /* =========================================================
    DASHBOARD
 ========================================================= */
-.hero {
-    padding: 32px;
-    border-radius: var(--radius);
-    margin-bottom: 22px;
+
+.dashboard {
+    max-width: 1400px;
+
+    margin: 24px auto 0;
+}
+
+.welcome-card {
+    padding: 30px;
+
+    border-radius: 24px;
+
+    margin-bottom: 20px;
+
     position: relative;
     overflow: hidden;
 }
 
-.hero::after {
+.welcome-card::after {
     content: "";
+
     position: absolute;
+
     width: 250px;
     height: 250px;
-    right: -80px;
-    top: -100px;
+
     border-radius: 50%;
-    background: rgba(48,149,255,0.12);
-    filter: blur(10px);
+
+    background: rgba(37, 136, 255, 0.08);
+
+    right: -100px;
+    top: -100px;
 }
 
-.hero h2 {
-    font-size: clamp(25px, 3vw, 37px);
-    margin-bottom: 10px;
+.welcome-card h1 {
+    font-size: clamp(25px, 4vw, 38px);
+    margin-bottom: 8px;
 }
 
-.hero p {
+.welcome-card p {
+    color: var(--muted);
     max-width: 650px;
-    color: var(--muted);
-    line-height: 1.7;
-}
-
-.hero-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 22px;
-}
-
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 22px;
-}
-
-.stat-card {
-    padding: 21px;
-    border-radius: 18px;
-    transition: var(--transition);
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(49,149,255,0.25);
-}
-
-.stat-icon {
-    width: 40px;
-    height: 40px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    background: rgba(49,149,255,0.11);
-    color: #56aaff;
-}
-
-.stat-card strong {
-    display: block;
-    font-size: 29px;
-    margin-bottom: 4px;
-}
-
-.stat-card span {
-    color: var(--muted);
-    font-size: 12px;
 }
 
 /* =========================================================
-   DASHBOARD GRID
+   SECTION GRID
 ========================================================= */
-.dashboard-grid {
+
+.section-grid {
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 20px;
-}
 
-.panel {
-    padding: 24px;
-    border-radius: var(--radius);
-}
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(210px, 1fr)
+        );
 
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.panel-header h3 {
-    font-size: 17px;
-}
-
-.panel-header span {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-/* =========================================================
-   REPORT LIST
-========================================================= */
-.report-list {
-    display: grid;
-    gap: 10px;
-}
-
-.report-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     gap: 15px;
-    padding: 14px;
-    border-radius: 13px;
-    background: rgba(255,255,255,0.035);
-    border: 1px solid rgba(255,255,255,0.055);
 }
 
-.report-main {
-    min-width: 0;
-}
+.section-card {
+    padding: 20px;
 
-.report-main strong {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 13px;
-}
+    border-radius: 20px;
 
-.report-main span {
-    color: #7288a3;
-    font-size: 11px;
-}
+    min-height: 160px;
 
-.status {
-    flex: 0 0 auto;
-    padding: 6px 10px;
-    border-radius: 30px;
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.status.pending {
-    color: #ffca6a;
-    background: rgba(255,189,74,0.10);
-}
-
-.status.review {
-    color: #58aaff;
-    background: rgba(49,149,255,0.10);
-}
-
-.status.resolved {
-    color: #4de596;
-    background: rgba(40,209,124,0.10);
-}
-
-/* =========================================================
-   FORM
-========================================================= */
-.form-card {
-    padding: 28px;
-    border-radius: var(--radius);
-}
-
-.form-section-title {
-    margin: 28px 0 17px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    color: #6db8ff;
-    font-size: 14px;
-}
-
-.form-section-title:first-child {
-    margin-top: 0;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-}
-
-.form-grid .full {
-    grid-column: 1 / -1;
-}
-
-.file-upload {
-    position: relative;
-    padding: 25px;
-    border: 1px dashed rgba(100,160,220,0.35);
-    border-radius: 14px;
-    text-align: center;
-    background: rgba(255,255,255,0.025);
-}
-
-.file-upload input {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
     cursor: pointer;
+
+    position: relative;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease;
 }
 
-.file-upload strong {
-    display: block;
+.section-card:hover {
+    transform: translateY(-5px);
+
+    border-color:
+        rgba(37, 136, 255, 0.45);
+
+    background:
+        rgba(20, 50, 90, 0.65);
+}
+
+.section-number {
+    width: 39px;
+    height: 39px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(37, 136, 255, 0.15);
+
+    color: #69acff;
+
+    font-weight: 800;
+
+    margin-bottom: 15px;
+}
+
+.section-card h3 {
+    font-size: 16px;
     margin-bottom: 6px;
 }
 
-.file-upload span {
+.section-card p {
     color: var(--muted);
     font-size: 12px;
 }
 
-.checkbox-row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    margin: 20px 0;
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.6;
+.status {
+    position: absolute;
+
+    right: 15px;
+    top: 15px;
+
+    font-size: 11px;
+
+    padding: 5px 8px;
+
+    border-radius: 8px;
 }
 
-.checkbox-row input {
-    width: auto;
-    margin-top: 3px;
+.status.pending {
+    background: rgba(255, 200, 87, 0.1);
+    color: var(--warning);
 }
 
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+.status.completed {
+    background: rgba(40, 209, 124, 0.1);
+    color: var(--success);
 }
 
 /* =========================================================
-   EMPTY STATE
+   FORM PAGE
 ========================================================= */
-.empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    color: var(--muted);
+
+#formPage {
+    display: none;
+
+    max-width: 1000px;
+
+    margin: 24px auto;
 }
 
-.empty-icon {
-    width: 60px;
-    height: 60px;
-    display: grid;
-    place-items: center;
-    margin: 0 auto 15px;
-    border-radius: 18px;
-    background: rgba(49,149,255,0.08);
-    color: #54a9ff;
+.form-container {
+    padding: 30px;
+
+    border-radius: 25px;
+}
+
+/* =========================================================
+   FORM HEADER
+========================================================= */
+
+.form-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.form-title h2 {
     font-size: 25px;
+}
+
+.form-title p {
+    color: var(--muted);
+
+    margin-top: 5px;
+
+    font-size: 13px;
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.progress-container {
+    margin-bottom: 28px;
+}
+
+.progress-top {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 9px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.progress-bar {
+    height: 8px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+
+    width: 0%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #1265c5,
+            #2588ff
+        );
+
+    transition: width 0.5s ease;
+}
+
+/* =========================================================
+   FIELD GRID
+========================================================= */
+
+.fields {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 18px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #dbe8f7;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+
+    padding: 13px;
+
+    border-radius: 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.11);
+
+    background: rgba(0, 10, 25, 0.34);
+
+    color: white;
+
+    outline: none;
+
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.field textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: rgba(37, 136, 255, 0.7);
+
+    box-shadow:
+        0 0 0 4px rgba(37, 136, 255, 0.08);
+}
+
+/* =========================================================
+   FORM FOOTER
+========================================================= */
+
+.form-actions {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 30px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+.action-right {
+    display: flex;
+
+    gap: 10px;
 }
 
 /* =========================================================
    TOAST
 ========================================================= */
-.toast {
+
+#toast {
     position: fixed;
-    z-index: 9999;
-    right: 22px;
-    bottom: 22px;
-    max-width: 360px;
-    padding: 15px 18px;
-    border-radius: 15px;
-    background: rgba(8,26,46,0.92);
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+
+    right: 20px;
+    bottom: 20px;
+
+    max-width: 350px;
+
+    padding: 14px 17px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(10, 27, 51, 0.92);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.13);
+
     backdrop-filter: blur(20px);
-    transform: translateY(30px);
+
+    box-shadow: var(--shadow);
+
+    transform:
+        translateY(120px);
+
     opacity: 0;
-    pointer-events: none;
-    transition: 0.35s ease;
+
+    transition:
+        all 0.35s ease;
+
+    z-index: 1000;
+
+    font-size: 13px;
 }
 
-.toast.show {
+#toast.show {
     transform: translateY(0);
     opacity: 1;
 }
 
-.toast strong {
-    display: block;
-    margin-bottom: 3px;
+#toast.success {
+    border-color:
+        rgba(40, 209, 124, 0.35);
 }
 
-.toast span {
-    color: var(--muted);
-    font-size: 12px;
+#toast.error {
+    border-color:
+        rgba(255, 93, 108, 0.35);
 }
 
 /* =========================================================
-   MOBILE SIDEBAR
+   LOADING
 ========================================================= */
-.mobile-overlay {
+
+.loading-overlay {
+    position: fixed;
+
+    inset: 0;
+
     display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(1, 7, 18, 0.68);
+
+    backdrop-filter: blur(8px);
+
+    z-index: 9999;
+}
+
+.loading-overlay.show {
+    display: flex;
+}
+
+.loader-card {
+    padding: 28px;
+
+    border-radius: 20px;
+
+    text-align: center;
+}
+
+.spinner {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    border:
+        3px solid rgba(255, 255, 255, 0.1);
+
+    border-top-color: #2588ff;
+
+    animation:
+        spin 0.8s linear infinite;
+
+    margin: auto auto 14px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
 ========================================================= */
-@media (max-width: 950px) {
-    .login-wrapper {
-        grid-template-columns: 1fr;
-        max-width: 650px;
+
+@media (max-width: 700px) {
+
+    .app {
+        padding: 10px;
     }
 
-    .login-info {
+    #loginPage {
+        min-height: calc(100vh - 20px);
+    }
+
+    .login-card {
+        padding: 32px 22px;
+
+        border-radius: 22px;
+    }
+
+    .header {
+        padding: 13px;
+
+        border-radius: 18px;
+    }
+
+    .brand-text h2 {
+        font-size: 15px;
+    }
+
+    .user-badge {
         display: none;
     }
 
-    .stats {
-        grid-template-columns: repeat(2, 1fr);
+    .dashboard {
+        margin-top: 14px;
     }
 
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 760px) {
-    #loginLayout {
-        padding: 15px;
-    }
-
-    .login-wrapper {
-        min-height: auto;
-        border-radius: 24px;
-    }
-
-    .login-panel {
-        padding: 38px 24px;
-    }
-
-    .login-panel h2 {
-        font-size: 27px;
-    }
-
-    .app-shell {
-        display: block;
-    }
-
-    .sidebar {
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 270px;
-        transform: translateX(-105%);
-        transition: transform 0.35s ease;
-        box-shadow: 25px 0 60px rgba(0,0,0,0.4);
-    }
-
-    .sidebar.open {
-        transform: translateX(0);
-    }
-
-    .mobile-overlay {
-        position: fixed;
-        z-index: 999;
-        inset: 0;
-        background: rgba(0,0,0,0.55);
-        backdrop-filter: blur(3px);
-    }
-
-    .mobile-overlay.show {
-        display: block;
-    }
-
-    .main {
-        padding: 17px;
-    }
-
-    .mobile-menu {
-        width: 43px;
-        height: 43px;
-        display: grid;
-        place-items: center;
-        border-radius: 12px;
-        color: white;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.09);
-    }
-
-    .topbar {
-        gap: 12px;
-    }
-
-    .page-title {
-        flex: 1;
-    }
-
-    .page-title h1 {
-        font-size: 21px;
-    }
-
-    .top-user {
-        display: none;
-    }
-
-    .hero {
+    .welcome-card {
         padding: 23px;
+
+        border-radius: 20px;
     }
 
-    .hero-actions {
-        flex-direction: column;
-    }
-
-    .stats {
+    .section-grid {
+        grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
 
-    .stat-card {
-        padding: 16px;
+    .section-card {
+        min-height: 145px;
+
+        padding: 15px;
     }
 
-    .stat-card strong {
-        font-size: 23px;
+    .section-card h3 {
+        font-size: 14px;
     }
 
-    .panel,
-    .form-card {
-        padding: 19px;
+    #formPage {
+        margin: 14px auto;
     }
 
-    .form-grid {
+    .form-container {
+        padding: 20px 15px;
+
+        border-radius: 20px;
+    }
+
+    .form-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .fields {
         grid-template-columns: 1fr;
-        gap: 15px;
     }
 
-    .form-grid .full {
+    .field.full {
         grid-column: auto;
     }
 
     .form-actions {
-        flex-direction: column-reverse;
-    }
-
-    .form-actions .btn {
-        width: 100%;
-    }
-}
-
-@media (max-width: 430px) {
-    .stats {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .hero h2 {
-        font-size: 25px;
-    }
-
-    .report-item {
-        align-items: flex-start;
         flex-direction: column;
     }
 
-    .toast {
-        left: 15px;
-        right: 15px;
-        bottom: 15px;
+    .action-right {
+        width: 100%;
+    }
+
+    .action-right .btn {
+        flex: 1;
+    }
+
+    #toast {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        max-width: none;
     }
 }
 
-/* =========================================================
-   REDUCED MOTION ACCESSIBILITY
-========================================================= */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+@media (max-width: 400px) {
+
+    .section-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -1109,1526 +1134,1832 @@ select:focus {
 <!-- =======================================================
      BACKGROUND
 ======================================================= -->
+
 <div class="background">
     <div class="orb one"></div>
     <div class="orb two"></div>
     <div class="orb three"></div>
 </div>
 
+<div class="app">
 
 <!-- =======================================================
-     LOGIN LAYOUT
+     LOGIN PAGE
 ======================================================= -->
-<section id="loginLayout" class="layout">
 
-    <div class="login-wrapper glass">
+<section id="loginPage">
 
-        <div class="login-info">
+    <div class="login-card glass">
 
-            <div class="brand">
-                <div class="brand-icon">◆</div>
-                <div>
-                    <h1>Report Portal</h1>
+        <div class="logo">
+            OR
+        </div>
+
+        <h1>Online Report</h1>
+
+        <p>
+            Sign in to access your reporting dashboard.
+        </p>
+
+        <div
+            id="loginError"
+            class="error-message">
+        </div>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span>👤</span>
+
+                    <input
+                        id="username"
+                        class="form-control"
+                        type="text"
+                        placeholder="Enter username"
+                        autocomplete="username"
+                        required>
+
                 </div>
+
             </div>
 
-            <h2>
-                Online<br>
-                <span>Report Form</span>
-            </h2>
+            <div class="form-group">
 
-            <p>
-                A secure and simple portal for submitting,
-                tracking and managing reports online.
-            </p>
+                <label for="password">
+                    Password
+                </label>
 
-            <div class="feature-list">
+                <div class="input-wrapper">
 
-                <div class="feature">
-                    <div class="feature-icon">✓</div>
-                    Secure report submission
+                    <span>🔐</span>
+
+                    <input
+                        id="password"
+                        class="form-control"
+                        type="password"
+                        placeholder="Enter password"
+                        autocomplete="current-password"
+                        required>
+
                 </div>
 
-                <div class="feature">
-                    <div class="feature-icon">↗</div>
-                    Track report progress
-                </div>
+            </div>
 
-                <div class="feature">
-                    <div class="feature-icon">◈</div>
-                    Responsive on all devices
-                </div>
+            <button
+                id="loginButton"
+                type="submit"
+                class="btn btn-primary">
+
+                Login
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     MAIN PAGE
+======================================================= -->
+
+<section id="mainPage">
+
+    <!-- HEADER -->
+
+    <header class="header glass">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                OR
+            </div>
+
+            <div class="brand-text">
+
+                <h2>
+                    Online Report Form
+                </h2>
+
+                <small>
+                    Reporting Dashboard
+                </small>
 
             </div>
 
         </div>
 
+        <div class="user-area">
 
-        <div class="login-panel">
-
-            <div class="brand">
-                <div class="brand-icon">◆</div>
-                <div>
-                    <h1>Report Portal</h1>
-                </div>
+            <div
+                id="loggedUser"
+                class="user-badge">
             </div>
 
-            <h2>Welcome back</h2>
+            <button
+                id="logoutButton"
+                class="btn btn-danger btn-small">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- DASHBOARD -->
+
+    <main
+        id="dashboard"
+        class="dashboard">
+
+        <div class="welcome-card glass">
+
+            <h1>
+                Welcome, <span id="welcomeUser"></span>
+            </h1>
 
             <p>
-                Sign in to access your report dashboard.
+                Complete your report section by section.
+                Your progress will be saved to your assigned
+                Google Sheet.
             </p>
 
-            <form id="loginForm">
-
-                <div class="form-group">
-
-                    <label for="username">
-                        Username
-                    </label>
-
-                    <div class="input-wrap">
-
-                        <span class="input-icon">◉</span>
-
-                        <input
-                            type="text"
-                            id="username"
-                            placeholder="Enter your username"
-                            autocomplete="username"
-                            required
-                        >
-
-                    </div>
-
-                </div>
+        </div>
 
 
-                <div class="form-group">
+        <div
+            id="sectionGrid"
+            class="section-grid">
+        </div>
 
-                    <label for="password">
-                        Password
-                    </label>
+    </main>
 
-                    <div class="input-wrap">
 
-                        <span class="input-icon">●</span>
+    <!-- ===================================================
+         FORM PAGE
+    =================================================== -->
 
-                        <input
-                            type="password"
-                            id="password"
-                            placeholder="Enter your password"
-                            autocomplete="current-password"
-                            required
-                        >
+    <section id="formPage">
 
-                    </div>
+        <div class="form-container glass">
+
+            <div class="form-header">
+
+                <div class="form-title">
+
+                    <h2 id="formSectionTitle">
+                        Section 1
+                    </h2>
+
+                    <p id="formSectionDescription">
+                        Complete the information below.
+                    </p>
 
                 </div>
-
-
-                <div
-                    id="loginError"
-                    class="error-message"
-                    aria-live="polite"
-                ></div>
-
 
                 <button
-                    type="submit"
-                    class="btn btn-primary full-width ripple-btn"
-                >
-                    Sign In
+                    id="backToDashboard"
+                    class="btn btn-secondary btn-small">
+
+                    ← Dashboard
+
                 </button>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div class="progress-container">
+
+                <div class="progress-top">
+
+                    <span id="progressText">
+                        Section 1 of 17
+                    </span>
+
+                    <span id="progressPercent">
+                        0%
+                    </span>
+
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        id="progressFill"
+                        class="progress-fill">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form id="reportForm">
+
+                <div
+                    id="dynamicFields"
+                    class="fields">
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        id="previousButton"
+                        class="btn btn-secondary">
+
+                        ← Previous
+
+                    </button>
+
+                    <div class="action-right">
+
+                        <button
+                            type="button"
+                            id="saveButton"
+                            class="btn btn-success">
+
+                            Save
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="nextButton"
+                            class="btn btn-primary">
+
+                            Next →
+
+                        </button>
+
+                    </div>
+
+                </div>
 
             </form>
 
         </div>
 
-    </div>
+    </section>
 
 </section>
+
+</div>
 
 
 <!-- =======================================================
-     APPLICATION LAYOUT
+     TOAST
 ======================================================= -->
-<section id="appLayout" class="layout hidden">
 
-    <div class="app-shell">
+<div id="toast"></div>
 
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="sidebar">
 
-            <div class="sidebar-brand">
+<!-- =======================================================
+     LOADING
+======================================================= -->
 
-                <div class="brand-icon">
-                    ◆
-                </div>
+<div
+    id="loadingOverlay"
+    class="loading-overlay">
 
-                <strong>
-                    Report Portal
-                </strong>
+    <div class="loader-card glass">
 
-            </div>
+        <div class="spinner"></div>
 
-
-            <nav class="sidebar-nav">
-
-                <button
-                    class="nav-btn active ripple-btn"
-                    data-section="home"
-                >
-                    <span>⌂</span>
-                    Home
-                </button>
-
-                <button
-                    class="nav-btn ripple-btn"
-                    data-section="newReport"
-                >
-                    <span>＋</span>
-                    New Report
-                </button>
-
-                <button
-                    class="nav-btn ripple-btn"
-                    data-section="reports"
-                >
-                    <span>▤</span>
-                    My Reports
-                </button>
-
-                <button
-                    class="nav-btn ripple-btn"
-                    data-section="profile"
-                >
-                    <span>◯</span>
-                    Profile
-                </button>
-
-            </nav>
-
-
-            <div class="sidebar-bottom">
-
-                <div class="user-mini">
-
-                    <div
-                        class="avatar"
-                        id="sidebarAvatar"
-                    >
-                        G
-                    </div>
-
-                    <div class="user-mini-info">
-
-                        <strong id="sidebarUsername">
-                            User
-                        </strong>
-
-                        <span>
-                            Online
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <button
-                    id="logoutBtn"
-                    class="nav-btn ripple-btn"
-                    style="margin-top:8px;"
-                >
-                    <span>↪</span>
-                    Logout
-                </button>
-
-            </div>
-
-        </aside>
-
-
-        <div
-            id="mobileOverlay"
-            class="mobile-overlay"
-        ></div>
-
-
-        <!-- MAIN -->
-        <main class="main">
-
-            <header class="topbar">
-
-                <button
-                    id="mobileMenu"
-                    class="mobile-menu ripple-btn"
-                    aria-label="Open menu"
-                >
-                    ☰
-                </button>
-
-                <div class="page-title">
-
-                    <h1 id="pageTitle">
-                        Dashboard
-                    </h1>
-
-                    <p id="pageSubtitle">
-                        Welcome to your report portal.
-                    </p>
-
-                </div>
-
-
-                <div class="top-user">
-
-                    <div
-                        class="avatar"
-                        id="topAvatar"
-                    >
-                        G
-                    </div>
-
-                    <strong id="topUsername">
-                        User
-                    </strong>
-
-                </div>
-
-            </header>
-
-
-            <!-- =================================================
-                 HOME
-            ================================================== -->
-            <section
-                id="home"
-                class="app-section active"
-            >
-
-                <div class="hero glass">
-
-                    <h2>
-                        Welcome,
-                        <span id="welcomeUsername">
-                            User
-                        </span>
-                    </h2>
-
-                    <p>
-                        Use this portal to submit a new report,
-                        review your previous submissions and
-                        monitor the progress of your reports.
-                    </p>
-
-                    <div class="hero-actions">
-
-                        <button
-                            class="btn btn-primary ripple-btn"
-                            data-section="newReport"
-                        >
-                            + Submit New Report
-                        </button>
-
-                        <button
-                            class="btn btn-secondary ripple-btn"
-                            data-section="reports"
-                        >
-                            View My Reports
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="stats">
-
-                    <div class="stat-card glass">
-
-                        <div class="stat-icon">
-                            ▤
-                        </div>
-
-                        <strong id="totalReports">
-                            0
-                        </strong>
-
-                        <span>
-                            Total Reports
-                        </span>
-
-                    </div>
-
-
-                    <div class="stat-card glass">
-
-                        <div class="stat-icon">
-                            ◷
-                        </div>
-
-                        <strong id="pendingReports">
-                            0
-                        </strong>
-
-                        <span>
-                            Pending
-                        </span>
-
-                    </div>
-
-
-                    <div class="stat-card glass">
-
-                        <div class="stat-icon">
-                            ↗
-                        </div>
-
-                        <strong id="reviewReports">
-                            0
-                        </strong>
-
-                        <span>
-                            Under Review
-                        </span>
-
-                    </div>
-
-
-                    <div class="stat-card glass">
-
-                        <div class="stat-icon">
-                            ✓
-                        </div>
-
-                        <strong id="resolvedReports">
-                            0
-                        </strong>
-
-                        <span>
-                            Resolved
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-grid">
-
-                    <div class="panel glass">
-
-                        <div class="panel-header">
-
-                            <h3>
-                                Recent Reports
-                            </h3>
-
-                            <span>
-                                Latest submissions
-                            </span>
-
-                        </div>
-
-                        <div
-                            id="recentReports"
-                            class="report-list"
-                        ></div>
-
-                    </div>
-
-
-                    <div class="panel glass">
-
-                        <div class="panel-header">
-
-                            <h3>
-                                Quick Actions
-                            </h3>
-
-                        </div>
-
-                        <div
-                            style="
-                            display:grid;
-                            gap:10px;
-                            "
-                        >
-
-                            <button
-                                class="btn btn-secondary ripple-btn"
-                                data-section="newReport"
-                            >
-                                📝 Create a report
-                            </button>
-
-                            <button
-                                class="btn btn-secondary ripple-btn"
-                                data-section="reports"
-                            >
-                                📋 Check report status
-                            </button>
-
-                            <button
-                                class="btn btn-secondary ripple-btn"
-                                data-section="profile"
-                            >
-                                👤 View profile
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 NEW REPORT
-            ================================================== -->
-            <section
-                id="newReport"
-                class="app-section"
-            >
-
-                <div class="form-card glass">
-
-                    <div class="panel-header">
-
-                        <div>
-                            <h3>
-                                Submit a New Report
-                            </h3>
-
-                            <span>
-                                Please provide accurate information.
-                            </span>
-                        </div>
-
-                    </div>
-
-
-                    <form id="reportForm">
-
-                        <div class="form-section-title">
-                            Report Information
-                        </div>
-
-
-                        <div class="form-grid">
-
-                            <div class="form-group">
-
-                                <label for="reportCategory">
-                                    Report Category *
-                                </label>
-
-                                <select
-                                    id="reportCategory"
-                                    required
-                                >
-
-                                    <option value="">
-                                        Select category
-                                    </option>
-
-                                    <option>
-                                        General
-                                    </option>
-
-                                    <option>
-                                        Incident
-                                    </option>
-
-                                    <option>
-                                        Complaint
-                                    </option>
-
-                                    <option>
-                                        Suggestion
-                                    </option>
-
-                                    <option>
-                                        Other
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="reportDate">
-                                    Date *
-                                </label>
-
-                                <input
-                                    type="date"
-                                    id="reportDate"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <div class="form-group full">
-
-                                <label for="reportTitle">
-                                    Report Title *
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="reportTitle"
-                                    placeholder="Enter a short title"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <div class="form-group full">
-
-                                <label for="reportLocation">
-                                    Location
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="reportLocation"
-                                    placeholder="Where did this happen?"
-                                >
-
-                            </div>
-
-
-                            <div class="form-group full">
-
-                                <label for="reportDescription">
-                                    Description *
-                                </label>
-
-                                <textarea
-                                    id="reportDescription"
-                                    placeholder="Describe the report in detail..."
-                                    required
-                                ></textarea>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="form-section-title">
-                            Supporting Information
-                        </div>
-
-
-                        <div class="form-grid">
-
-                            <div class="form-group full">
-
-                                <label>
-                                    Attachments
-                                </label>
-
-                                <div class="file-upload">
-
-                                    <input
-                                        type="file"
-                                        id="reportFile"
-                                        multiple
-                                    >
-
-                                    <strong>
-                                        📎 Click to attach files
-                                    </strong>
-
-                                    <span id="fileText">
-                                        Images, documents or other supporting files
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="witness">
-                                    Witness / Additional Contact
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="witness"
-                                    placeholder="Optional"
-                                >
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="contact">
-                                    Contact Information
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="contact"
-                                    placeholder="Optional"
-                                >
-
-                            </div>
-
-                        </div>
-
-
-                        <label class="checkbox-row">
-
-                            <input
-                                type="checkbox"
-                                id="declaration"
-                                required
-                            >
-
-                            <span>
-                                I confirm that the information provided
-                                in this report is accurate to the best
-                                of my knowledge.
-                            </span>
-
-                        </label>
-
-
-                        <div class="form-actions">
-
-                            <button
-                                type="reset"
-                                class="btn btn-secondary ripple-btn"
-                            >
-                                Clear Form
-                            </button>
-
-                            <button
-                                type="submit"
-                                class="btn btn-primary ripple-btn"
-                            >
-                                Submit Report
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 REPORTS
-            ================================================== -->
-            <section
-                id="reports"
-                class="app-section"
-            >
-
-                <div class="panel glass">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <h3>
-                                My Reports
-                            </h3>
-
-                            <span>
-                                All reports submitted from this account.
-                            </span>
-
-                        </div>
-
-                        <button
-                            class="btn btn-primary ripple-btn"
-                            data-section="newReport"
-                        >
-                            + New Report
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        id="allReports"
-                        class="report-list"
-                    ></div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 PROFILE
-            ================================================== -->
-            <section
-                id="profile"
-                class="app-section"
-            >
-
-                <div class="panel glass">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <h3>
-                                Profile
-                            </h3>
-
-                            <span>
-                                Your portal account information.
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        style="
-                        display:flex;
-                        align-items:center;
-                        gap:20px;
-                        padding:15px 0 25px;
-                        "
-                    >
-
-                        <div
-                            class="avatar"
-                            style="
-                            width:70px;
-                            height:70px;
-                            font-size:25px;
-                            "
-                            id="profileAvatar"
-                        >
-                            G
-                        </div>
-
-                        <div>
-
-                            <h2 id="profileUsername">
-                                User
-                            </h2>
-
-                            <p
-                                style="
-                                color:var(--muted);
-                                margin-top:5px;
-                                font-size:13px;
-                                "
-                            >
-                                Authorized portal user
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-grid">
-
-                        <div class="form-group">
-
-                            <label>
-                                Username
-                            </label>
-
-                            <input
-                                id="profileUsernameInput"
-                                readonly
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label>
-                                Account Status
-                            </label>
-
-                            <input
-                                value="Active"
-                                readonly
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </main>
+        <div id="loadingText">
+            Loading...
+        </div>
 
     </div>
 
-</section>
-
-
-<!-- TOAST -->
-<div
-    id="toast"
-    class="toast"
-    role="status"
-    aria-live="polite"
->
-    <strong id="toastTitle">
-        Success
-    </strong>
-
-    <span id="toastMessage">
-        Operation completed.
-    </span>
 </div>
 
 
 <script>
 /* =========================================================
-   USER ACCOUNTS
-   IMPORTANT:
+   GOOGLE APPS SCRIPT CONFIGURATION
+========================================================= */
+
+/*
+    IMPORTANT:
+
+    Replace the URL below with your deployed Google Apps
+    Script Web App URL.
+
+    Example:
+
+    https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+*/
+
+const APPSCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbyH_8jVAwfGZ0E9FEOmQ2qrzNIuVvWG4gnNztzTLb64g5FZddrB-KFMXOXyMbOjZnHX4w/exec";
+
+
+/* =========================================================
+   GOOGLE SPREADSHEET ID
+========================================================= */
+
+const SPREADSHEET_ID =
+    "1J5PLvSBjVIyycJPnSg1PhHHxWcw3F1ydCInFMxnphhw";
+
+
+/* =========================================================
+   USERS
+=========================================================
+
    These credentials are kept exactly as provided.
+
+   IMPORTANT:
+   This frontend list should NOT be considered secure
+   authentication.
+
+   Real authentication must happen inside Apps Script.
 ========================================================= */
 
 const USERS = {
+
     "Gilgal": "1111",
+
     "Tabernacle": "2222",
+
     "Jorkha": "3333",
+
     "Hmarkhawlien": "4444",
+
     "Chikhur": "5555",
+
     "Bethel": "6666",
+
     "Tlangmawi": "7777",
+
     "Zoar": "8888"
+
 };
 
 
 /* =========================================================
-   STATE
+   17 SECTIONS
+=========================================================
+
+   These are currently placeholders because the actual
+   section names, fields, and cell coordinates should come
+   from your PDF.
+
+   Once the PDF structure is available, replace these with
+   the exact data structure.
+========================================================= */
+
+const sections = [
+
+    {
+        id: 1,
+        title: "Section 1",
+        description: "Complete Section 1.",
+        fields: [
+            {
+                name: "field1",
+                label: "Field 1",
+                type: "text",
+                required: false
+            },
+            {
+                name: "field2",
+                label: "Field 2",
+                type: "text",
+                required: false
+            },
+            {
+                name: "remarks",
+                label: "Remarks",
+                type: "textarea",
+                required: false,
+                full: true
+            }
+        ]
+    },
+
+    {
+        id: 2,
+        title: "Section 2",
+        description: "Complete Section 2.",
+        fields: []
+    },
+
+    {
+        id: 3,
+        title: "Section 3",
+        description: "Complete Section 3.",
+        fields: []
+    },
+
+    {
+        id: 4,
+        title: "Section 4",
+        description: "Complete Section 4.",
+        fields: []
+    },
+
+    {
+        id: 5,
+        title: "Section 5",
+        description: "Complete Section 5.",
+        fields: []
+    },
+
+    {
+        id: 6,
+        title: "Section 6",
+        description: "Complete Section 6.",
+        fields: []
+    },
+
+    {
+        id: 7,
+        title: "Section 7",
+        description: "Complete Section 7.",
+        fields: []
+    },
+
+    {
+        id: 8,
+        title: "Section 8",
+        description: "Complete Section 8.",
+        fields: []
+    },
+
+    {
+        id: 9,
+        title: "Section 9",
+        description: "Complete Section 9.",
+        fields: []
+    },
+
+    {
+        id: 10,
+        title: "Section 10",
+        description: "Complete Section 10.",
+        fields: []
+    },
+
+    {
+        id: 11,
+        title: "Section 11",
+        description: "Complete Section 11.",
+        fields: []
+    },
+
+    {
+        id: 12,
+        title: "Section 12",
+        description: "Complete Section 12.",
+        fields: []
+    },
+
+    {
+        id: 13,
+        title: "Section 13",
+        description: "Complete Section 13.",
+        fields: []
+    },
+
+    {
+        id: 14,
+        title: "Section 14",
+        description: "Complete Section 14.",
+        fields: []
+    },
+
+    {
+        id: 15,
+        title: "Section 15",
+        description: "Complete Section 15.",
+        fields: []
+    },
+
+    {
+        id: 16,
+        title: "Section 16",
+        description: "Complete Section 16.",
+        fields: []
+    },
+
+    {
+        id: 17,
+        title: "Section 17",
+        description: "Complete Section 17.",
+        fields: []
+    }
+
+];
+
+
+/* =========================================================
+   APPLICATION STATE
 ========================================================= */
 
 let currentUser = null;
 
-let reports = JSON.parse(
-    localStorage.getItem("onlineReportPortalReports") || "[]"
-);
+let currentSection = 1;
+
+let formData = {};
+
+let completedSections = {};
 
 
 /* =========================================================
    DOM
 ========================================================= */
 
-const loginLayout = document.getElementById("loginLayout");
-const appLayout = document.getElementById("appLayout");
+const loginPage =
+    document.getElementById("loginPage");
 
-const loginForm = document.getElementById("loginForm");
-const loginError = document.getElementById("loginError");
+const mainPage =
+    document.getElementById("mainPage");
 
-const sidebar = document.getElementById("sidebar");
-const mobileOverlay = document.getElementById("mobileOverlay");
-const mobileMenu = document.getElementById("mobileMenu");
+const loginForm =
+    document.getElementById("loginForm");
 
-const reportForm = document.getElementById("reportForm");
+const loginError =
+    document.getElementById("loginError");
 
-const toast = document.getElementById("toast");
-const toastTitle = document.getElementById("toastTitle");
-const toastMessage = document.getElementById("toastMessage");
+const loginButton =
+    document.getElementById("loginButton");
 
+const sectionGrid =
+    document.getElementById("sectionGrid");
 
-/* =========================================================
-   LOCAL STORAGE
-========================================================= */
+const dashboard =
+    document.getElementById("dashboard");
 
-function saveReports() {
-    localStorage.setItem(
-        "onlineReportPortalReports",
-        JSON.stringify(reports)
-    );
-}
+const formPage =
+    document.getElementById("formPage");
 
+const dynamicFields =
+    document.getElementById("dynamicFields");
 
-/* =========================================================
-   INITIAL DATE
-========================================================= */
+const reportForm =
+    document.getElementById("reportForm");
 
-document.getElementById("reportDate").value =
-    new Date().toISOString().split("T")[0];
+const previousButton =
+    document.getElementById("previousButton");
+
+const nextButton =
+    document.getElementById("nextButton");
+
+const saveButton =
+    document.getElementById("saveButton");
+
+const logoutButton =
+    document.getElementById("logoutButton");
+
+const backToDashboard =
+    document.getElementById("backToDashboard");
+
+const toast =
+    document.getElementById("toast");
+
+const loadingOverlay =
+    document.getElementById("loadingOverlay");
+
+const loadingText =
+    document.getElementById("loadingText");
 
 
 /* =========================================================
    LOGIN
 ========================================================= */
 
-loginForm.addEventListener("submit", function(event) {
-
-    event.preventDefault();
-
-    const username =
-        document.getElementById("username").value.trim();
-
-    const password =
-        document.getElementById("password").value;
-
-    loginError.textContent = "";
-
-    if (
-        Object.prototype.hasOwnProperty.call(USERS, username) &&
-        USERS[username] === password
-    ) {
-
-        currentUser = username;
-
-        transitionToApp();
-
-    } else {
-
-        loginError.textContent =
-            "Invalid username or password.";
-
-    }
-
-});
-
-
-/* =========================================================
-   LOGIN -> APP TRANSITION
-========================================================= */
-
-function transitionToApp() {
-
-    loginLayout.classList.add("fade-out");
-
-    setTimeout(() => {
-
-        loginLayout.classList.add("hidden");
-
-        appLayout.classList.remove("hidden");
-
-        appLayout.classList.remove("fade-out");
-
-        appLayout.classList.add("layout");
-
-        updateUserUI();
-
-        updateDashboard();
-
-    }, 350);
-}
-
-
-/* =========================================================
-   APP -> LOGIN TRANSITION
-========================================================= */
-
-function logout() {
-
-    appLayout.classList.add("fade-out");
-
-    setTimeout(() => {
-
-        appLayout.classList.add("hidden");
-
-        loginLayout.classList.remove("hidden");
-
-        loginLayout.classList.remove("fade-out");
-
-        loginForm.reset();
-
-        loginError.textContent = "";
-
-        currentUser = null;
-
-    }, 350);
-}
-
-
-document
-    .getElementById("logoutBtn")
-    .addEventListener("click", logout);
-
-
-/* =========================================================
-   UPDATE USER UI
-========================================================= */
-
-function updateUserUI() {
-
-    if (!currentUser) return;
-
-    const firstLetter =
-        currentUser.charAt(0).toUpperCase();
-
-    document.getElementById("sidebarUsername").textContent =
-        currentUser;
-
-    document.getElementById("topUsername").textContent =
-        currentUser;
-
-    document.getElementById("welcomeUsername").textContent =
-        currentUser;
-
-    document.getElementById("profileUsername").textContent =
-        currentUser;
-
-    document.getElementById("profileUsernameInput").value =
-        currentUser;
-
-    document.getElementById("sidebarAvatar").textContent =
-        firstLetter;
-
-    document.getElementById("topAvatar").textContent =
-        firstLetter;
-
-    document.getElementById("profileAvatar").textContent =
-        firstLetter;
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-const navButtons =
-    document.querySelectorAll(".nav-btn[data-section]");
-
-const sectionButtons =
-    document.querySelectorAll("[data-section]");
-
-const pageTitles = {
-
-    home: [
-        "Dashboard",
-        "Welcome to your report portal."
-    ],
-
-    newReport: [
-        "New Report",
-        "Submit a new report."
-    ],
-
-    reports: [
-        "My Reports",
-        "Review your submitted reports."
-    ],
-
-    profile: [
-        "Profile",
-        "Manage your portal profile."
-    ]
-
-};
-
-
-function showSection(sectionName) {
-
-    document
-        .querySelectorAll(".app-section")
-        .forEach(section => {
-
-            section.classList.remove("active");
-
-        });
-
-
-    const section =
-        document.getElementById(sectionName);
-
-    if (!section) return;
-
-    section.classList.add("active");
-
-
-    navButtons.forEach(button => {
-
-        button.classList.toggle(
-            "active",
-            button.dataset.section === sectionName
-        );
-
-    });
-
-
-    if (pageTitles[sectionName]) {
-
-        document.getElementById("pageTitle").textContent =
-            pageTitles[sectionName][0];
-
-        document.getElementById("pageSubtitle").textContent =
-            pageTitles[sectionName][1];
-
-    }
-
-
-    closeMobileMenu();
-
-    if (sectionName === "reports") {
-        renderReports();
-    }
-
-    if (sectionName === "home") {
-        updateDashboard();
-    }
-}
-
-
-sectionButtons.forEach(button => {
-
-    button.addEventListener("click", function() {
-
-        showSection(this.dataset.section);
-
-    });
-
-});
-
-
-/* =========================================================
-   REPORT SUBMISSION
-========================================================= */
-
-reportForm.addEventListener("submit", function(event) {
-
-    event.preventDefault();
-
-    if (!currentUser) return;
-
-
-    const title =
-        document.getElementById("reportTitle").value.trim();
-
-    const category =
-        document.getElementById("reportCategory").value;
-
-    const date =
-        document.getElementById("reportDate").value;
-
-    const location =
-        document.getElementById("reportLocation").value.trim();
-
-    const description =
-        document.getElementById("reportDescription").value.trim();
-
-    const witness =
-        document.getElementById("witness").value.trim();
-
-    const contact =
-        document.getElementById("contact").value.trim();
-
-    const fileInput =
-        document.getElementById("reportFile");
-
-
-    const report = {
-
-        id:
-            "RPT-" +
-            Date.now().toString().slice(-8),
-
-        user: currentUser,
-
-        title,
-
-        category,
-
-        date,
-
-        location,
-
-        description,
-
-        witness,
-
-        contact,
-
-        files:
-            Array.from(fileInput.files)
-                .map(file => file.name),
-
-        status: "Pending",
-
-        createdAt:
-            new Date().toLocaleString()
-
-    };
-
-
-    reports.unshift(report);
-
-    saveReports();
-
-    reportForm.reset();
-
-    document.getElementById("reportDate").value =
-        new Date().toISOString().split("T")[0];
-
-    document.getElementById("fileText").textContent =
-        "Images, documents or other supporting files";
-
-
-    showToast(
-        "Report Submitted",
-        "Your report ID is " + report.id
-    );
-
-
-    updateDashboard();
-
-    showSection("reports");
-
-});
-
-
-/* =========================================================
-   FILE UPLOAD DISPLAY
-========================================================= */
-
-document
-    .getElementById("reportFile")
-    .addEventListener("change", function() {
-
-        const fileText =
-            document.getElementById("fileText");
-
-        if (this.files.length === 0) {
-
-            fileText.textContent =
-                "Images, documents or other supporting files";
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const username =
+            document
+                .getElementById("username")
+                .value
+                .trim();
+
+        const password =
+            document
+                .getElementById("password")
+                .value
+                .trim();
+
+        if (!username || !password) {
+
+            showLoginError(
+                "Please enter username and password."
+            );
 
             return;
+        }
+
+        loginButton.disabled = true;
+        loginButton.textContent = "Signing in...";
+
+        /*
+            First attempt server-side authentication.
+        */
+
+        let serverLoginSuccessful = false;
+
+        if (
+            APPSCRIPT_URL &&
+            !APPSCRIPT_URL.includes("YOUR_APPS_SCRIPT")
+        ) {
+
+            try {
+
+                const result =
+                    await apiRequest(
+                        "login",
+                        {
+                            username: username,
+                            password: password
+                        }
+                    );
+
+                if (
+                    result &&
+                    result.success
+                ) {
+
+                    serverLoginSuccessful = true;
+
+                    completeLogin(username);
+
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "Apps Script login failed:",
+                    error
+                );
+
+            }
 
         }
 
 
-        const names =
-            Array.from(this.files)
-                .map(file => file.name)
-                .join(", ");
+        /*
+            Temporary local fallback.
 
-        fileText.textContent =
-            this.files.length +
-            " file(s): " +
-            names;
+            Once Apps Script authentication is fully
+            configured, remove this fallback.
+        */
 
-    });
+        if (!serverLoginSuccessful) {
+
+            if (
+                USERS[username] &&
+                USERS[username] === password
+            ) {
+
+                completeLogin(username);
+
+            } else {
+
+                showLoginError(
+                    "Invalid username or password."
+                );
+
+            }
+
+        }
+
+        loginButton.disabled = false;
+        loginButton.textContent = "Login";
+    }
+);
 
 
 /* =========================================================
-   USER REPORTS
+   COMPLETE LOGIN
 ========================================================= */
 
-function getUserReports() {
+async function completeLogin(username) {
 
-    return reports.filter(
-        report => report.user === currentUser
+    currentUser = username;
+
+    localStorage.setItem(
+        "onlineReportUser",
+        username
+    );
+
+    document.getElementById(
+        "loggedUser"
+    ).textContent = username;
+
+    document.getElementById(
+        "welcomeUser"
+    ).textContent = username;
+
+
+    /*
+        Try loading user's saved data from Google Sheets.
+    */
+
+    if (
+        APPSCRIPT_URL &&
+        !APPSCRIPT_URL.includes("YOUR_APPS_SCRIPT")
+    ) {
+
+        try {
+
+            showLoading(
+                "Loading your report..."
+            );
+
+            const result =
+                await apiRequest(
+                    "getUserData",
+                    {
+                        username: username
+                    }
+                );
+
+            hideLoading();
+
+            if (
+                result &&
+                result.success &&
+                result.data
+            ) {
+
+                formData =
+                    result.data.formData || {};
+
+                completedSections =
+                    result.data.completedSections || {};
+
+            }
+
+        } catch (error) {
+
+            hideLoading();
+
+            console.warn(
+                "Could not load saved data:",
+                error
+            );
+
+        }
+
+    }
+
+
+    renderSections();
+
+    switchToMain();
+}
+
+
+/* =========================================================
+   PAGE TRANSITION
+========================================================= */
+
+function switchToMain() {
+
+    loginPage.classList.add(
+        "page-exit"
+    );
+
+    setTimeout(() => {
+
+        loginPage.style.display =
+            "none";
+
+        loginPage.classList.remove(
+            "page-exit"
+        );
+
+        mainPage.classList.add(
+            "visible"
+        );
+
+    }, 450);
+}
+
+
+/* =========================================================
+   RENDER SECTION CARDS
+========================================================= */
+
+function renderSections() {
+
+    sectionGrid.innerHTML = "";
+
+    sections.forEach(section => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "section-card glass";
+
+        const completed =
+            completedSections[
+                section.id
+            ] === true;
+
+        card.innerHTML = `
+
+            <div class="section-number">
+                ${section.id}
+            </div>
+
+            <h3>
+                ${escapeHtml(section.title)}
+            </h3>
+
+            <p>
+                ${escapeHtml(section.description)}
+            </p>
+
+            <span class="status ${
+                completed
+                    ? "completed"
+                    : "pending"
+            }">
+                ${
+                    completed
+                        ? "Completed"
+                        : "Pending"
+                }
+            </span>
+        `;
+
+        card.addEventListener(
+            "click",
+            () => openSection(section.id)
+        );
+
+        sectionGrid.appendChild(card);
+
+    });
+}
+
+
+/* =========================================================
+   OPEN SECTION
+========================================================= */
+
+function openSection(sectionNumber) {
+
+    currentSection =
+        sectionNumber;
+
+    dashboard.style.display =
+        "none";
+
+    formPage.style.display =
+        "block";
+
+    formPage.style.animation =
+        "pageFadeIn 0.45s ease";
+
+    renderCurrentSection();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* =========================================================
+   RENDER CURRENT SECTION
+========================================================= */
+
+function renderCurrentSection() {
+
+    const section =
+        sections.find(
+            item =>
+                item.id === currentSection
+        );
+
+    if (!section) return;
+
+    document.getElementById(
+        "formSectionTitle"
+    ).textContent =
+        section.title;
+
+    document.getElementById(
+        "formSectionDescription"
+    ).textContent =
+        section.description;
+
+
+    const percent =
+        Math.round(
+            (
+                currentSection /
+                sections.length
+            ) * 100
+        );
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        `Section ${currentSection} of ${sections.length}`;
+
+    document.getElementById(
+        "progressPercent"
+    ).textContent =
+        `${percent}%`;
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        `${percent}%`;
+
+
+    previousButton.disabled =
+        currentSection === 1;
+
+    if (
+        currentSection === sections.length
+    ) {
+
+        nextButton.textContent =
+            "Finish ✓";
+
+    } else {
+
+        nextButton.textContent =
+            "Next →";
+
+    }
+
+
+    renderFields(section);
+
+}
+
+
+/* =========================================================
+   RENDER FIELDS
+========================================================= */
+
+function renderFields(section) {
+
+    dynamicFields.innerHTML = "";
+
+    if (
+        !section.fields ||
+        section.fields.length === 0
+    ) {
+
+        dynamicFields.innerHTML = `
+
+            <div class="field full">
+
+                <div
+                    style="
+                        padding:25px;
+                        border-radius:15px;
+                        background:rgba(255,255,255,.04);
+                        border:1px solid rgba(255,255,255,.08);
+                        color:#9fb1c9;
+                        text-align:center;
+                    ">
+
+                    The fields for this section
+                    will be added from your PDF
+                    structure.
+
+                </div>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    section.fields.forEach(
+        field => {
+
+            const wrapper =
+                document.createElement("div");
+
+            wrapper.className =
+                "field";
+
+            if (field.full) {
+
+                wrapper.classList.add(
+                    "full"
+                );
+
+            }
+
+
+            const label =
+                document.createElement(
+                    "label"
+                );
+
+            label.textContent =
+                field.label;
+
+            wrapper.appendChild(label);
+
+
+            let input;
+
+
+            if (
+                field.type ===
+                "textarea"
+            ) {
+
+                input =
+                    document.createElement(
+                        "textarea"
+                    );
+
+            } else if (
+                field.type ===
+                "select"
+            ) {
+
+                input =
+                    document.createElement(
+                        "select"
+                    );
+
+                if (
+                    field.options
+                ) {
+
+                    field.options.forEach(
+                        option => {
+
+                            const optionElement =
+                                document.createElement(
+                                    "option"
+                                );
+
+                            optionElement.value =
+                                option.value ??
+                                option;
+
+                            optionElement.textContent =
+                                option.label ??
+                                option;
+
+                            input.appendChild(
+                                optionElement
+                            );
+
+                        }
+                    );
+
+                }
+
+            } else {
+
+                input =
+                    document.createElement(
+                        "input"
+                    );
+
+                input.type =
+                    field.type || "text";
+
+            }
+
+
+            input.name =
+                field.name;
+
+            input.id =
+                `field_${field.name}`;
+
+            if (field.required) {
+
+                input.required =
+                    true;
+
+            }
+
+
+            const existingValue =
+                getFieldValue(
+                    currentSection,
+                    field.name
+                );
+
+            if (
+                existingValue !==
+                undefined
+            ) {
+
+                input.value =
+                    existingValue;
+
+            }
+
+
+            wrapper.appendChild(input);
+
+            dynamicFields.appendChild(
+                wrapper
+            );
+
+        }
     );
 
 }
 
 
 /* =========================================================
-   STATUS CLASS
+   GET FIELD VALUE
 ========================================================= */
 
-function getStatusClass(status) {
+function getFieldValue(
+    sectionId,
+    fieldName
+) {
 
-    if (status === "Resolved") {
-        return "resolved";
+    if (
+        !formData[sectionId]
+    ) {
+
+        return undefined;
+
     }
 
-    if (status === "Under Review") {
-        return "review";
-    }
-
-    return "pending";
-}
-
-
-/* =========================================================
-   RENDER REPORTS
-========================================================= */
-
-function renderReports() {
-
-    const container =
-        document.getElementById("allReports");
-
-    const userReports =
-        getUserReports();
-
-
-    if (userReports.length === 0) {
-
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">▤</div>
-                <strong>No reports yet</strong>
-                <p style="margin-top:7px;">
-                    Your submitted reports will appear here.
-                </p>
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML =
-        userReports.map(report => `
-
-            <div class="report-item">
-
-                <div class="report-main">
-
-                    <strong>
-                        ${escapeHTML(report.title)}
-                    </strong>
-
-                    <span>
-                        ${escapeHTML(report.id)}
-                        •
-                        ${escapeHTML(report.category)}
-                        •
-                        ${escapeHTML(report.createdAt)}
-                    </span>
-
-                </div>
-
-                <span
-                    class="status ${getStatusClass(report.status)}"
-                >
-                    ${escapeHTML(report.status)}
-                </span>
-
-            </div>
-
-        `).join("");
+    return formData[
+        sectionId
+    ][fieldName];
 
 }
 
 
 /* =========================================================
-   RECENT REPORTS
+   COLLECT FORM
 ========================================================= */
 
-function renderRecentReports() {
+function collectCurrentSectionData() {
 
-    const container =
-        document.getElementById("recentReports");
+    const section =
+        sections.find(
+            item =>
+                item.id === currentSection
+        );
 
-    const userReports =
-        getUserReports().slice(0, 4);
+    if (!section) return {};
 
 
-    if (userReports.length === 0) {
+    const data = {};
 
-        container.innerHTML = `
-            <div class="empty-state" style="padding:25px 10px;">
-                <div class="empty-icon">＋</div>
-                <strong>No reports submitted</strong>
-                <p style="margin-top:7px;">
-                    Start by creating a new report.
-                </p>
-            </div>
-        `;
 
-        return;
+    if (
+        section.fields
+    ) {
+
+        section.fields.forEach(
+            field => {
+
+                const input =
+                    document.getElementById(
+                        `field_${field.name}`
+                    );
+
+                if (input) {
+
+                    data[field.name] =
+                        input.value;
+
+                }
+
+            }
+        );
+
     }
 
 
-    container.innerHTML =
-        userReports.map(report => `
+    formData[currentSection] =
+        data;
 
-            <div class="report-item">
+    return data;
+}
 
-                <div class="report-main">
 
-                    <strong>
-                        ${escapeHTML(report.title)}
-                    </strong>
+/* =========================================================
+   SAVE CURRENT SECTION
+========================================================= */
 
-                    <span>
-                        ${escapeHTML(report.id)}
-                    </span>
+async function saveCurrentSection(
+    showMessage = true
+) {
 
-                </div>
+    collectCurrentSectionData();
 
-                <span
-                    class="status ${getStatusClass(report.status)}"
-                >
-                    ${escapeHTML(report.status)}
-                </span>
+    completedSections[
+        currentSection
+    ] = true;
 
-            </div>
 
-        `).join("");
+    localStorage.setItem(
+        `report_${currentUser}`,
+        JSON.stringify({
+            formData:
+                formData,
+            completedSections:
+                completedSections
+        })
+    );
+
+
+    /*
+        Send data to Apps Script.
+    */
+
+    if (
+        APPSCRIPT_URL &&
+        !APPSCRIPT_URL.includes("YOUR_APPS_SCRIPT")
+    ) {
+
+        try {
+
+            const result =
+                await apiRequest(
+                    "saveSection",
+                    {
+                        username:
+                            currentUser,
+
+                        section:
+                            currentSection,
+
+                        data:
+                            formData[
+                                currentSection
+                            ]
+                    }
+                );
+
+            if (
+                result &&
+                !result.success
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "Server rejected data."
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast(
+                "Saved locally, but server save failed.",
+                "error"
+            );
+
+            return false;
+        }
+
+    }
+
+
+    if (showMessage) {
+
+        showToast(
+            "Section saved successfully.",
+            "success"
+        );
+
+    }
+
+    return true;
+}
+
+
+/* =========================================================
+   NEXT
+========================================================= */
+
+nextButton.addEventListener(
+    "click",
+    async function() {
+
+        animateButton(this);
+
+        const success =
+            await saveCurrentSection(
+                true
+            );
+
+        if (!success) return;
+
+
+        if (
+            currentSection <
+            sections.length
+        ) {
+
+            currentSection++;
+
+            renderCurrentSection();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        } else {
+
+            renderSections();
+
+            showToast(
+                "Report completed successfully!",
+                "success"
+            );
+
+            setTimeout(
+                showDashboard,
+                600
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PREVIOUS
+========================================================= */
+
+previousButton.addEventListener(
+    "click",
+    function() {
+
+        animateButton(this);
+
+        collectCurrentSectionData();
+
+        if (
+            currentSection > 1
+        ) {
+
+            currentSection--;
+
+            renderCurrentSection();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SAVE BUTTON
+========================================================= */
+
+saveButton.addEventListener(
+    "click",
+    async function() {
+
+        animateButton(this);
+
+        await saveCurrentSection(
+            true
+        );
+
+        renderSections();
+
+    }
+);
+
+
+/* =========================================================
+   BACK DASHBOARD
+========================================================= */
+
+backToDashboard.addEventListener(
+    "click",
+    function() {
+
+        collectCurrentSectionData();
+
+        showDashboard();
+
+    }
+);
+
+
+function showDashboard() {
+
+    formPage.style.display =
+        "none";
+
+    dashboard.style.display =
+        "block";
+
+    dashboard.style.animation =
+        "pageFadeIn 0.45s ease";
+
+    renderSections();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 }
 
 
 /* =========================================================
-   DASHBOARD STATISTICS
+   LOGOUT
 ========================================================= */
 
-function updateDashboard() {
+logoutButton.addEventListener(
+    "click",
+    function() {
 
-    if (!currentUser) return;
+        animateButton(this);
+
+        localStorage.removeItem(
+            "onlineReportUser"
+        );
+
+        currentUser = null;
+
+        formData = {};
+
+        completedSections = {};
+
+        mainPage.classList.add(
+            "page-exit"
+        );
+
+        setTimeout(() => {
+
+            mainPage.classList.remove(
+                "visible",
+                "page-exit"
+            );
+
+            mainPage.style.display =
+                "none";
+
+            formPage.style.display =
+                "none";
+
+            dashboard.style.display =
+                "block";
+
+            loginPage.style.display =
+                "flex";
+
+            loginPage.style.opacity =
+                "1";
+
+            loginPage.style.transform =
+                "translateY(0)";
+
+            document.getElementById(
+                "username"
+            ).value = "";
+
+            document.getElementById(
+                "password"
+            ).value = "";
+
+        }, 450);
+
+    }
+);
 
 
-    const userReports =
-        getUserReports();
+/* =========================================================
+   APPS SCRIPT API
+========================================================= */
+
+async function apiRequest(
+    action,
+    data = {}
+) {
+
+    const payload = {
+
+        action: action,
+
+        spreadsheetId:
+            SPREADSHEET_ID,
+
+        ...data
+
+    };
 
 
-    const pending =
-        userReports.filter(
-            report => report.status === "Pending"
-        ).length;
+    const response =
+        await fetch(
+            APPSCRIPT_URL,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "text/plain;charset=utf-8"
+                },
+
+                body:
+                    JSON.stringify(
+                        payload
+                    )
+            }
+        );
 
 
-    const review =
-        userReports.filter(
-            report => report.status === "Under Review"
-        ).length;
+    if (!response.ok) {
+
+        throw new Error(
+            `HTTP ${response.status}`
+        );
+
+    }
 
 
-    const resolved =
-        userReports.filter(
-            report => report.status === "Resolved"
-        ).length;
+    return await response.json();
+
+}
 
 
-    document.getElementById("totalReports").textContent =
-        userReports.length;
+/* =========================================================
+   AUTO LOGIN SESSION
+========================================================= */
 
-    document.getElementById("pendingReports").textContent =
-        pending;
+window.addEventListener(
+    "DOMContentLoaded",
+    async function() {
 
-    document.getElementById("reviewReports").textContent =
-        review;
+        /*
+            Local saved session.
 
-    document.getElementById("resolvedReports").textContent =
-        resolved;
+            For production, preferably validate
+            the session with Apps Script.
+        */
+
+        const savedUser =
+            localStorage.getItem(
+                "onlineReportUser"
+            );
+
+        if (
+            savedUser &&
+            USERS[savedUser]
+        ) {
+
+            currentUser =
+                savedUser;
+
+            document.getElementById(
+                "loggedUser"
+            ).textContent =
+                savedUser;
+
+            document.getElementById(
+                "welcomeUser"
+            ).textContent =
+                savedUser;
 
 
-    renderRecentReports();
+            const saved =
+                localStorage.getItem(
+                    `report_${savedUser}`
+                );
+
+            if (saved) {
+
+                try {
+
+                    const parsed =
+                        JSON.parse(saved);
+
+                    formData =
+                        parsed.formData ||
+                        {};
+
+                    completedSections =
+                        parsed.completedSections ||
+                        {};
+
+                } catch (error) {
+
+                    console.warn(
+                        "Could not restore local data."
+                    );
+
+                }
+
+            }
+
+
+            renderSections();
+
+            loginPage.style.display =
+                "none";
+
+            mainPage.classList.add(
+                "visible"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    toast.textContent =
+        message;
+
+    toast.className =
+        "";
+
+    toast.id =
+        "toast";
+
+    toast.classList.add(
+        "show",
+        type
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            3000
+        );
+
+}
+
+
+/* =========================================================
+   LOGIN ERROR
+========================================================= */
+
+function showLoginError(
+    message
+) {
+
+    loginError.textContent =
+        message;
+
+    loginError.classList.add(
+        "show"
+    );
+
+    setTimeout(
+        () => {
+
+            loginError.classList.remove(
+                "show"
+            );
+
+        },
+        3500
+    );
+
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function showLoading(
+    message = "Loading..."
+) {
+
+    loadingText.textContent =
+        message;
+
+    loadingOverlay.classList.add(
+        "show"
+    );
+
+}
+
+
+function hideLoading() {
+
+    loadingOverlay.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   BUTTON ANIMATION
+========================================================= */
+
+function animateButton(
+    button
+) {
+
+    const rect =
+        button.getBoundingClientRect();
+
+    const circle =
+        document.createElement(
+            "span"
+        );
+
+    const diameter =
+        Math.max(
+            rect.width,
+            rect.height
+        );
+
+    circle.style.width =
+        circle.style.height =
+        `${diameter}px`;
+
+    circle.style.left =
+        `${
+            event.clientX -
+            rect.left -
+            diameter / 2
+        }px`;
+
+    circle.style.top =
+        `${
+            event.clientY -
+            rect.top -
+            diameter / 2
+        }px`;
+
+    circle.classList.add(
+        "ripple"
+    );
+
+    button.appendChild(
+        circle
+    );
+
+    setTimeout(
+        () => circle.remove(),
+        650
+    );
 
 }
 
@@ -2637,161 +2968,98 @@ function updateDashboard() {
    HTML ESCAPE
 ========================================================= */
 
-function escapeHTML(value) {
+function escapeHtml(
+    text
+) {
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer;
-
-
-function showToast(title, message) {
-
-    toastTitle.textContent = title;
-
-    toastMessage.textContent = message;
-
-    toast.classList.add("show");
-
-
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-
-        toast.classList.remove("show");
-
-    }, 3500);
+    return String(text)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
 /* =========================================================
-   MOBILE MENU
+   BUTTON RIPPLE - GLOBAL
 ========================================================= */
 
-mobileMenu.addEventListener("click", () => {
+document.addEventListener(
+    "click",
+    function(event) {
 
-    sidebar.classList.add("open");
+        const button =
+            event.target.closest(
+                ".btn"
+            );
 
-    mobileOverlay.classList.add("show");
+        if (!button) return;
 
-});
+        const rect =
+            button.getBoundingClientRect();
 
+        const circle =
+            document.createElement(
+                "span"
+            );
 
-mobileOverlay.addEventListener("click", closeMobileMenu);
+        const diameter =
+            Math.max(
+                rect.width,
+                rect.height
+            );
 
+        circle.style.width =
+            circle.style.height =
+            `${diameter}px`;
 
-function closeMobileMenu() {
+        circle.style.left =
+            `${
+                event.clientX -
+                rect.left -
+                diameter / 2
+            }px`;
 
-    sidebar.classList.remove("open");
+        circle.style.top =
+            `${
+                event.clientY -
+                rect.top -
+                diameter / 2
+            }px`;
 
-    mobileOverlay.classList.remove("show");
+        circle.classList.add(
+            "ripple"
+        );
 
-}
+        button.appendChild(
+            circle
+        );
 
-
-/* =========================================================
-   BUTTON RIPPLE EFFECT
-========================================================= */
-
-document.addEventListener("click", function(event) {
-
-    const button =
-        event.target.closest(".ripple-btn");
-
-    if (!button) return;
-
-
-    const rect =
-        button.getBoundingClientRect();
-
-
-    const size =
-        Math.max(rect.width, rect.height);
-
-
-    const ripple =
-        document.createElement("span");
-
-
-    ripple.className = "ripple";
-
-    ripple.style.width =
-        size + "px";
-
-    ripple.style.height =
-        size + "px";
-
-    ripple.style.left =
-        event.clientX -
-        rect.left -
-        size / 2 +
-        "px";
-
-    ripple.style.top =
-        event.clientY -
-        rect.top -
-        size / 2 +
-        "px";
-
-
-    button.appendChild(ripple);
-
-
-    setTimeout(() => {
-
-        ripple.remove();
-
-    }, 700);
-
-});
-
-
-/* =========================================================
-   KEYBOARD ACCESSIBILITY
-========================================================= */
-
-document.addEventListener("keydown", function(event) {
-
-    if (event.key === "Escape") {
-
-        closeMobileMenu();
+        setTimeout(
+            () => circle.remove(),
+            650
+        );
 
     }
-
-});
-
-
-/* =========================================================
-   INITIAL STATE
-========================================================= */
-
-function initialize() {
-
-    // Always show login page when this page is opened.
-    loginLayout.classList.remove("hidden");
-    appLayout.classList.add("hidden");
-
-    loginLayout.classList.remove("fade-out");
-
-}
-
-
-initialize();
-
+);
 </script>
 
 </body>
 </html>
-```
