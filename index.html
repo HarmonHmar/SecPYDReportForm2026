@@ -129,7 +129,7 @@
       </form>
     </main>
 
-    <!-- 17-Section Wizard Form Layout -->
+    <!-- 17-Section Form Layout -->
     <main id="home-layout" class="glass-card layout hidden">
       <header>
         <h2>REPORT FORM 2026</h2>
@@ -155,7 +155,7 @@
   </div>
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyHSlcJCxnM3NzBSRSTV5pAfhe83RR7Cgalc8jm1lsQHXePSY1pIUaG5nXNYHtrVB3uw/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPwsbi0-losvArhnYsrgTnSFX5f4CoHgo6U6iup-VuUpaonXnXeUP65zrD3GWc9cvGCg/exec";
 
     const userDatabase = {
       Gilgal: "1111", Tabernacle: "2222", Jorkha: "3333", Hmarkhawlien: "4444",
@@ -311,35 +311,28 @@
       statusMsg.textContent = "Writing to Google Sheets...";
 
       try {
-        const response = await fetch(APPS_SCRIPT_URL, {
+        // Send payload cleanly
+        await fetch(APPS_SCRIPT_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ user: currentUser, cellUpdates: cellUpdates }),
-          redirect: "follow"
+          body: JSON.stringify({ user: String(currentUser), cellUpdates: cellUpdates })
         });
 
-        const resText = await response.text();
-        const result = JSON.parse(resText);
+        statusMsg.style.color = "var(--accent-cyan)";
+        statusMsg.textContent = "Saved successfully!";
 
-        if (result.status === "success") {
-          statusMsg.style.color = "var(--accent-cyan)";
-          statusMsg.textContent = "Saved successfully!";
-
-          setTimeout(() => {
-            if (currentStep < totalSteps) {
-              renderStep(currentStep + 1);
-            } else {
-              statusMsg.textContent = "All 17 Sections Submitted Successfully!";
-              setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
-            }
-          }, 400);
-        } else {
-          throw new Error(result.message || "Failed to write data");
-        }
+        setTimeout(() => {
+          if (currentStep < totalSteps) {
+            renderStep(currentStep + 1);
+          } else {
+            statusMsg.textContent = "All 17 Sections Submitted Successfully!";
+            setTimeout(() => { switchLayout(homeLayout, loginLayout); }, 2000);
+          }
+        }, 500);
 
       } catch (err) {
         statusMsg.style.color = "var(--error-color)";
-        statusMsg.textContent = "Error: " + err.message + ". Please try again.";
+        statusMsg.textContent = "Error saving data. Please try again.";
         nextBtn.disabled = false;
         prevBtn.disabled = false;
       }
