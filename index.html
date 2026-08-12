@@ -165,7 +165,6 @@
             font-weight: 600;
         }
 
-        /* Error state for invalid inputs */
         .input-error {
             border-color: var(--danger) !important;
             background: rgba(239, 68, 68, 0.1) !important;
@@ -244,7 +243,6 @@
             font-weight: 700;
         }
 
-        /* Progress Bar */
         .progress-container { margin-bottom: 24px; padding: 16px 20px; }
         .progress-header {
             display: flex; justify-content: space-between; align-items: center;
@@ -284,7 +282,6 @@
             margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--glass-border);
         }
 
-        /* Sync Spinner Overlay */
         .loading-overlay {
             position: fixed;
             top:0; left:0; width:100%; height:100%;
@@ -308,7 +305,6 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Toast */
         .toast {
             position: fixed; bottom: 20px; right: 20px;
             background: rgba(16, 185, 129, 0.2);
@@ -528,7 +524,7 @@
                         <!-- SECTION 10 -->
                         <div class="step-content hidden" data-step="10">
                             <div class="step-title"><i class="fa-solid fa-coins"></i> 10. Financial</div>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Rule: Income (C) must be greater than or equal to Expense (D) [C ≥ D].</p>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Rule: Income (C) must be ≥ Expense (D). [D49 is auto-calculated: Total Rows × 10]</p>
                             <div class="table-responsive">
                                 <table class="form-table">
                                     <thead><tr><th>Type</th><th>Income Amount (C)</th><th>Expense Amount (D)</th></tr></thead>
@@ -655,6 +651,9 @@
     <script>
         const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbyH_8jVAwfGZ0E9FEOmQ2qrzNIuVvWG4gnNztzTLb64g5FZddrB-KFMXOXyMbOjZnHX4w/exec";
         
+        // ⚠️ PASTE YOUR SECOND SPREADSHEET ID HERE WHEN YOU HAVE IT
+        const SECOND_SPREADSHEET_ID = "PASTE_YOUR_SECOND_SHEET_ID_HERE";
+
         const CREDENTIALS = {
             "Gilgal": "1111",
             "Tabernacle": "2222",
@@ -734,15 +733,16 @@
             }
             document.getElementById('roasted-tbody').innerHTML = roastHtml;
 
-            // Financial (Section 10) - Row 55 TOTAL is READONLY
+            // Financial (Section 10) - D49 & Row 55 TOTAL are READONLY
             const finItems = ["Local target", "Bamboo project", "Musical", "For Land", "Cond Fund", "Envelope", "Membership fee", "Ruby Jubilee", "Education", "Other source", "Added target", "Miscellaneous", "TOTAL"];
             document.getElementById('financial-tbody').innerHTML = finItems.map((item, idx) => {
                 let r = 43 + idx;
                 let isTotal = (r === 55);
+                let isD49 = (r === 49); // D49 is auto-calculated from second sheet
                 return `<tr>
                     <td><strong>${item}</strong></td>
                     <td><input type="number" class="form-control" data-cell="C${r}" ${isTotal ? 'readonly' : ''}></td>
-                    <td><input type="number" class="form-control" data-cell="D${r}" ${isTotal ? 'readonly' : ''}></td>
+                    <td><input type="number" class="form-control" data-cell="D${r}" ${(isTotal || isD49) ? 'readonly' : ''}></td>
                 </tr>`;
             }).join('');
 
@@ -860,12 +860,37 @@
                     passwordInput.value = '';
                 });
 
-                // Read saved sheet data
+                // Fetch second sheet row count and compute D49 = rows * 10
+                await fetchRowCountAndSetD49(user);
+
+                // Read saved main sheet data
                 await fetchSheetData(user);
             } else {
                 loginError.style.display = 'block';
             }
         });
+
+        /* Fetch row count from second Google Sheet and set D49 = count * 10 */
+        async function fetchRowCountAndSetD49(user) {
+            try {
+                const url = `${APPSCRIPT_URL}?action=getRowCount&sheetName=${encodeURIComponent(user)}&sheetId=${encodeURIComponent(SECOND_SPREADSHEET_ID)}&hasHeader=true`;
+                const response = await fetch(url);
+                const res = await response.json();
+
+                if (res.status === "success" && typeof res.count === 'number') {
+                    const rowCount = res.count;
+                    const d49Value = rowCount * 10;
+
+                    const d49Input = document.querySelector('[data-cell="D49"]');
+                    if (d49Input) {
+                        d49Input.value = d49Value;
+                    }
+                    console.log(`User ${user}: ${rowCount} rows found in second sheet. D49 set to ${d49Value}.`);
+                }
+            } catch (err) {
+                console.warn("Could not fetch second sheet row count:", err);
+            }
+        }
 
         async function fetchSheetData(user) {
             showLoading(`Loading saved data for "${user}" from Google Sheet...`);
@@ -879,8 +904,8 @@
 
                 if (result.status === "success" && result.data) {
                     Object.keys(result.data).forEach(cellRef => {
-                        // Skip C1 override to keep user name locked
-                        if (cellRef === "C1") return;
+                        // Skip C1 override and D49 override to keep auto-calculated values locked
+                        if (cellRef === "C1" || cellRef === "D49") return;
 
                         const input = document.querySelector(`[data-cell="${cellRef}"]`);
                         if (input && result.data[cellRef] !== undefined && result.data[cellRef] !== "") {
