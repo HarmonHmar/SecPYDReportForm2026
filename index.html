@@ -651,8 +651,8 @@
     <script>
         const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbyH_8jVAwfGZ0E9FEOmQ2qrzNIuVvWG4gnNztzTLb64g5FZddrB-KFMXOXyMbOjZnHX4w/exec";
         
-        // ⚠️ PASTE YOUR SECOND SPREADSHEET ID HERE WHEN YOU HAVE IT
-        const SECOND_SPREADSHEET_ID = "PASTE_YOUR_SECOND_SHEET_ID_HERE";
+        // ⚠️ PASTE YOUR SECOND SPREADSHEET ID HERE
+        const SECOND_SPREADSHEET_ID = "1dUJdmt7CokOneigl4JLzRsTBfRPYEAPcuypGsc7MAn0";
 
         const CREDENTIALS = {
             "Gilgal": "1111",
@@ -860,11 +860,11 @@
                     passwordInput.value = '';
                 });
 
-                // Fetch second sheet row count and compute D49 = rows * 10
-                await fetchRowCountAndSetD49(user);
-
                 // Read saved main sheet data
                 await fetchSheetData(user);
+
+                // Fetch second sheet row count and compute D49 = rows * 10
+                await fetchRowCountAndSetD49(user);
             } else {
                 loginError.style.display = 'block';
             }
@@ -885,7 +885,7 @@
                     if (d49Input) {
                         d49Input.value = d49Value;
                     }
-                    console.log(`User ${user}: ${rowCount} rows found in second sheet. D49 set to ${d49Value}.`);
+                    runAutoCalculations(); // Recalculate Total Expense D55
                 }
             } catch (err) {
                 console.warn("Could not fetch second sheet row count:", err);
@@ -904,7 +904,7 @@
 
                 if (result.status === "success" && result.data) {
                     Object.keys(result.data).forEach(cellRef => {
-                        // Skip C1 override and D49 override to keep auto-calculated values locked
+                        // Skip C1 and D49 overrides to keep auto-calculated values locked
                         if (cellRef === "C1" || cellRef === "D49") return;
 
                         const input = document.querySelector(`[data-cell="${cellRef}"]`);
