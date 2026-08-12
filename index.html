@@ -157,6 +157,21 @@
             box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
         }
 
+        .form-control[readonly] {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--accent-blue);
+            cursor: not-allowed;
+            border-style: dashed;
+            font-weight: 600;
+        }
+
+        /* Error state for invalid inputs */
+        .input-error {
+            border-color: var(--danger) !important;
+            background: rgba(239, 68, 68, 0.1) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+        }
+
         select.form-control option { background: #0f172a; color: var(--text-main); }
 
         /* Responsive Table */
@@ -326,7 +341,7 @@
 
     <!-- Notification Toast -->
     <div id="toast" class="toast">
-        <i class="fa-solid fa-cloud-arrow-up" style="color: var(--success); font-size: 1.2rem;"></i>
+        <i id="toast-icon" class="fa-solid fa-cloud-arrow-up" style="color: var(--success); font-size: 1.2rem;"></i>
         <span id="toast-text">Data synced with Google Sheets!</span>
     </div>
 
@@ -409,8 +424,8 @@
                         <div class="step-content" data-step="1">
                             <div class="step-title"><i class="fa-solid fa-map-location-dot"></i> 1. Local</div>
                             <div class="form-group">
-                                <label>Local Name <span class="cell-tag">C1</span></label>
-                                <input type="text" class="form-control" data-cell="C1" placeholder="Enter Local Name">
+                                <label>Local Name <span class="cell-tag">C1</span> (Auto-Locked)</label>
+                                <input type="text" class="form-control" data-cell="C1" readonly placeholder="Auto-filled from user">
                             </div>
                             <div class="form-group">
                                 <label>Local Chairman <span class="cell-tag">C2</span></label>
@@ -446,7 +461,7 @@
                             <div class="step-title"><i class="fa-solid fa-chart-pie"></i> 3. Statistics</div>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>Category</th><th>Male</th><th>Female</th><th>Total</th></tr></thead>
+                                    <thead><tr><th>Category</th><th>Male</th><th>Female</th><th>Total (Auto C+D)</th></tr></thead>
                                     <tbody id="stats-tbody"></tbody>
                                 </table>
                             </div>
@@ -513,9 +528,10 @@
                         <!-- SECTION 10 -->
                         <div class="step-content hidden" data-step="10">
                             <div class="step-title"><i class="fa-solid fa-coins"></i> 10. Financial</div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Rule: Income (C) must be greater than or equal to Expense (D) [C ≥ D].</p>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>Type</th><th>Income Amount</th><th>Expense Amount</th></tr></thead>
+                                    <thead><tr><th>Type</th><th>Income Amount (C)</th><th>Expense Amount (D)</th></tr></thead>
                                     <tbody id="financial-tbody"></tbody>
                                 </table>
                             </div>
@@ -526,12 +542,12 @@
                             <div class="step-title"><i class="fa-solid fa-ban-smoke"></i> 11. Quit Smoking 2025</div>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>Male <span class="cell-tag">B59</span></th><th>Female <span class="cell-tag">C59</span></th><th>Total <span class="cell-tag">D59</span></th></tr></thead>
+                                    <thead><tr><th>Male <span class="cell-tag">B59</span></th><th>Female <span class="cell-tag">C59</span></th><th>Total (Auto B+C) <span class="cell-tag">D59</span></th></tr></thead>
                                     <tbody>
                                         <tr>
                                             <td><input type="number" class="form-control" data-cell="B59"></td>
                                             <td><input type="number" class="form-control" data-cell="C59"></td>
-                                            <td><input type="number" class="form-control" data-cell="D59"></td>
+                                            <td><input type="number" class="form-control" data-cell="D59" readonly></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -611,8 +627,8 @@
                                 <input type="text" class="form-control" data-cell="D139">
                             </div>
                             <div class="form-group">
-                                <label>Date <span class="cell-tag">D140</span></label>
-                                <input type="date" class="form-control" data-cell="D140">
+                                <label>Date of Submission <span class="cell-tag">D140</span> (Auto-Locked)</label>
+                                <input type="date" class="form-control" data-cell="D140" readonly>
                             </div>
                         </div>
 
@@ -637,7 +653,6 @@
 
     <!-- JS LOGIC -->
     <script>
-        // CONFIGURATION & CREDENTIALS
         const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbyH_8jVAwfGZ0E9FEOmQ2qrzNIuVvWG4gnNztzTLb64g5FZddrB-KFMXOXyMbOjZnHX4w/exec";
         
         const CREDENTIALS = {
@@ -678,10 +693,13 @@
         window.addEventListener('DOMContentLoaded', () => {
             initDynamicTables();
             document.querySelector('[data-cell="D140"]').valueAsDate = new Date();
+            
+            // Real-time Calculation Event Listener
+            document.getElementById('wizard-form').addEventListener('input', runAutoCalculations);
         });
 
         function initDynamicTables() {
-            // Stats
+            // Stats (Section 3) - Columns E are READONLY
             const stats = [
                 { name: "2025 Member", cells: ["C13", "D13", "E13"] },
                 { name: "New Member", cells: ["C14", "D14", "E14"] },
@@ -696,11 +714,11 @@
                     <td>${s.name}</td>
                     <td><input type="number" class="form-control" data-cell="${s.cells[0]}"></td>
                     <td><input type="number" class="form-control" data-cell="${s.cells[1]}"></td>
-                    <td><input type="number" class="form-control" data-cell="${s.cells[2]}"></td>
+                    <td><input type="number" class="form-control" data-cell="${s.cells[2]}" readonly></td>
                 </tr>
             `).join('');
 
-            // Envelope
+            // Envelope (Section 5)
             let envHtml = '';
             for(let i=0; i<3; i++) {
                 let r = 25 + i;
@@ -708,7 +726,7 @@
             }
             document.getElementById('envelope-tbody').innerHTML = envHtml;
 
-            // Roasted Rice
+            // Roasted Rice (Section 8)
             let roastHtml = '';
             for(let i=0; i<3; i++) {
                 let r = 35 + i;
@@ -716,11 +734,19 @@
             }
             document.getElementById('roasted-tbody').innerHTML = roastHtml;
 
-            // Financial
+            // Financial (Section 10) - Row 55 TOTAL is READONLY
             const finItems = ["Local target", "Bamboo project", "Musical", "For Land", "Cond Fund", "Envelope", "Membership fee", "Ruby Jubilee", "Education", "Other source", "Added target", "Miscellaneous", "TOTAL"];
-            document.getElementById('financial-tbody').innerHTML = finItems.map((item, idx) => `<tr><td>${item}</td><td><input type="number" class="form-control" data-cell="C${43+idx}"></td><td><input type="number" class="form-control" data-cell="D${43+idx}"></td></tr>`).join('');
+            document.getElementById('financial-tbody').innerHTML = finItems.map((item, idx) => {
+                let r = 43 + idx;
+                let isTotal = (r === 55);
+                return `<tr>
+                    <td><strong>${item}</strong></td>
+                    <td><input type="number" class="form-control" data-cell="C${r}" ${isTotal ? 'readonly' : ''}></td>
+                    <td><input type="number" class="form-control" data-cell="D${r}" ${isTotal ? 'readonly' : ''}></td>
+                </tr>`;
+            }).join('');
 
-            // Quit Smoke
+            // Quit Smoke (Section 12)
             let quitHtml = '';
             for(let i=0; i<15; i++) {
                 let r = 63 + i;
@@ -728,7 +754,7 @@
             }
             document.getElementById('new-quit-tbody').innerHTML = quitHtml;
 
-            // Leadership
+            // Leadership (Section 14)
             let leadHtml = '';
             for(let i=0; i<10; i++) {
                 let r = 85 + i;
@@ -736,7 +762,7 @@
             }
             document.getElementById('leadership-tbody').innerHTML = leadHtml;
 
-            // Education
+            // Education (Section 15)
             let eduHtml = '';
             for(let i=0; i<25; i++) {
                 let r = 98 + i;
@@ -744,13 +770,69 @@
             }
             document.getElementById('edu-tbody').innerHTML = eduHtml;
 
-            // Worker
+            // Worker (Section 16)
             let workHtml = '';
             for(let i=0; i<10; i++) {
                 let r = 126 + i;
                 workHtml += `<tr><td>${i+1}</td><td><input type="text" class="form-control" data-cell="B${r}"></td><td><input type="text" class="form-control" data-cell="C${r}"></td><td><input type="text" class="form-control" data-cell="D${r}"></td><td><input type="text" class="form-control" data-cell="E${r}"></td></tr>`;
             }
             document.getElementById('worker-tbody').innerHTML = workHtml;
+        }
+
+        /* --------------------------------------------------------------------------
+           AUTOMATIC CALCULATIONS (REAL-TIME)
+           -------------------------------------------------------------------------- */
+        function runAutoCalculations() {
+            // 1. Statistics (Rows 13 - 19: C + D = E)
+            for(let r = 13; r <= 19; r++) {
+                let c = parseFloat(document.querySelector(`[data-cell="C${r}"]`)?.value) || 0;
+                let d = parseFloat(document.querySelector(`[data-cell="D${r}"]`)?.value) || 0;
+                let eInput = document.querySelector(`[data-cell="E${r}"]`);
+                if (eInput) eInput.value = c + d;
+            }
+
+            // 2. Financial Totals (Sum C43:C54 -> C55, Sum D43:D54 -> D55)
+            let sumC = 0, sumD = 0;
+            for(let r = 43; r <= 54; r++) {
+                sumC += parseFloat(document.querySelector(`[data-cell="C${r}"]`)?.value) || 0;
+                sumD += parseFloat(document.querySelector(`[data-cell="D${r}"]`)?.value) || 0;
+            }
+            let c55 = document.querySelector('[data-cell="C55"]');
+            let d55 = document.querySelector('[data-cell="D55"]');
+            if (c55) c55.value = sumC;
+            if (d55) d55.value = sumD;
+
+            // 3. Quit Smoking 2025 (B59 + C59 = D59)
+            let b59 = parseFloat(document.querySelector('[data-cell="B59"]')?.value) || 0;
+            let c59 = parseFloat(document.querySelector('[data-cell="C59"]')?.value) || 0;
+            let d59 = document.querySelector('[data-cell="D59"]');
+            if (d59) d59.value = b59 + c59;
+        }
+
+        /* --------------------------------------------------------------------------
+           FINANCIAL VALIDATION (C >= D)
+           -------------------------------------------------------------------------- */
+        function validateFinancialSection() {
+            let isValid = true;
+            for(let r = 43; r <= 55; r++) {
+                let cInput = document.querySelector(`[data-cell="C${r}"]`);
+                let dInput = document.querySelector(`[data-cell="D${r}"]`);
+                if (!cInput || !dInput) continue;
+
+                let cVal = parseFloat(cInput.value) || 0;
+                let dVal = parseFloat(dInput.value) || 0;
+
+                // Rule: C must be >= D
+                if (dVal > cVal) {
+                    isValid = false;
+                    dInput.classList.add('input-error');
+                    cInput.classList.add('input-error');
+                } else {
+                    dInput.classList.remove('input-error');
+                    cInput.classList.remove('input-error');
+                }
+            }
+            return isValid;
         }
 
         /* --------------------------------------------------------------------------
@@ -765,7 +847,13 @@
                 loginError.style.display = 'none';
                 loggedUser = user;
 
-                // Show Layout
+                // Auto-fill C1 (Readonly)
+                const c1Input = document.querySelector('[data-cell="C1"]');
+                if (c1Input) c1Input.value = user;
+
+                // Lock D140 Date
+                document.querySelector('[data-cell="D140"]').valueAsDate = new Date();
+
                 switchLayout(loginLayout, homeLayout, () => {
                     userDisplayName.textContent = user;
                     userAvatar.textContent = user.charAt(0);
@@ -782,9 +870,7 @@
         async function fetchSheetData(user) {
             showLoading(`Loading saved data for "${user}" from Google Sheet...`);
             
-            // Gather all cell references in form
-            const cells = Array.from(document.querySelectorAll('[data-cell]'))
-                               .map(el => el.getAttribute('data-cell'));
+            const cells = Array.from(document.querySelectorAll('[data-cell]')).map(el => el.getAttribute('data-cell'));
 
             try {
                 const url = `${APPSCRIPT_URL}?action=read&sheetName=${encodeURIComponent(user)}&cells=${cells.join(',')}`;
@@ -792,21 +878,22 @@
                 const result = await response.json();
 
                 if (result.status === "success" && result.data) {
-                    // Fill inputs with fetched sheet values
                     Object.keys(result.data).forEach(cellRef => {
+                        // Skip C1 override to keep user name locked
+                        if (cellRef === "C1") return;
+
                         const input = document.querySelector(`[data-cell="${cellRef}"]`);
                         if (input && result.data[cellRef] !== undefined && result.data[cellRef] !== "") {
-                            // Format date strings if date picker
                             if (input.type === 'date') {
-                                try {
-                                    const d = new Date(result.data[cellRef]);
-                                    input.valueAsDate = d;
-                                } catch(e) { input.value = result.data[cellRef]; }
+                                try { input.valueAsDate = new Date(result.data[cellRef]); } catch(e) { input.value = result.data[cellRef]; }
                             } else {
                                 input.value = result.data[cellRef];
                             }
                         }
                     });
+
+                    // Re-run calculations after loading sheet data
+                    runAutoCalculations();
                     showToast(`Loaded existing data from tab "${user}"!`);
                 }
             } catch (err) {
@@ -822,6 +909,13 @@
            -------------------------------------------------------------------------- */
         async function syncSheetData() {
             if (!loggedUser) return;
+
+            // Run validation before saving
+            if (!validateFinancialSection()) {
+                showToast("Error: Income (C) must be ≥ Expense (D) in Financial section!", true);
+                return;
+            }
+
             showLoading(`Syncing data to tab "${loggedUser}"...`);
 
             // Collect form key-values
@@ -830,6 +924,9 @@
                 const cell = input.getAttribute('data-cell');
                 cellDataMap[cell] = input.value;
             });
+
+            // Ensure C1 is always logged user name
+            cellDataMap["C1"] = loggedUser;
 
             try {
                 const response = await fetch(APPSCRIPT_URL, {
@@ -871,11 +968,18 @@
 
         /* Wizard Navigation */
         nextBtn.addEventListener('click', async () => {
+            // Validation on Section 10 before leaving
+            if (currentStep === 10) {
+                if (!validateFinancialSection()) {
+                    showToast("Income (C) cannot be smaller than Expense (D)!", true);
+                    return;
+                }
+            }
+
             if (currentStep < totalSteps) {
                 currentStep++;
                 updateStepUI();
             } else {
-                // Final Submit
                 await syncSheetData();
             }
         });
@@ -933,8 +1037,13 @@
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
             const toastText = document.getElementById('toast-text');
+            const toastIcon = document.getElementById('toast-icon');
+
             toastText.textContent = msg;
             toast.style.borderColor = isError ? "var(--danger)" : "var(--success)";
+            toastIcon.className = isError ? "fa-solid fa-triangle-exclamation" : "fa-solid fa-cloud-arrow-up";
+            toastIcon.style.color = isError ? "var(--danger)" : "var(--success)";
+
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
