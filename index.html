@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sheets Connected Report Portal</title>
+    <title>Section PYD reportform 2026</title>
     <!-- Google Font & FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -332,13 +332,13 @@
     <!-- Sync Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay hidden">
         <div class="spinner"></div>
-        <p id="loading-text" style="font-size: 0.95rem; font-weight: 500;">Connecting to Google Sheets...</p>
+        <p id="loading-text" style="font-size: 0.95rem; font-weight: 500;">Connecting to Database...</p>
     </div>
 
     <!-- Notification Toast -->
     <div id="toast" class="toast">
         <i id="toast-icon" class="fa-solid fa-cloud-arrow-up" style="color: var(--success); font-size: 1.2rem;"></i>
-        <span id="toast-text">Data synced with Google Sheets!</span>
+        <span id="toast-text">Data synced with Database!</span>
     </div>
 
     <!-- 1. LOGIN LAYOUT -->
@@ -347,18 +347,18 @@
             <div class="brand-logo">
                 <i class="fa-solid fa-file-signature"></i>
             </div>
-            <h2 style="margin-bottom: 6px;">Report Portal</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">Connected to Google Sheets Database</p>
+            <h2 style="margin-bottom: 6px;">Report Form 2026</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">Connected to Google Database</p>
 
             <div id="login-error" class="error-msg">
-                <i class="fa-solid fa-triangle-exclamation"></i> Invalid User or Password
+                <i class="fa-solid fa-triangle-exclamation"></i> Local or Password andik nawh.
             </div>
 
             <form id="login-form">
                 <div class="form-group">
-                    <label for="username-select">Select User Location</label>
+                    <label for="username-select">Select Local</label>
                     <select id="username-select" class="form-control" required>
-                        <option value="" disabled selected>-- Select Location --</option>
+                        <option value="" disabled selected>-- Select local --</option>
                         <option value="Gilgal">Gilgal</option>
                         <option value="Tabernacle">Tabernacle</option>
                         <option value="Jorkha">Jorkha</option>
@@ -372,11 +372,11 @@
 
                 <div class="form-group">
                     <label for="password-input">Password</label>
-                    <input type="password" id="password-input" class="form-control" placeholder="Enter password" required>
+                    <input type="password" id="password-input" class="form-control" placeholder="Password ziek rawh" required>
                 </div>
 
                 <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">
-                    <span>Sign In & Load Sheet</span>
+                    <span>Sign In to Database</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
@@ -392,7 +392,7 @@
                     <div class="avatar" id="user-avatar">G</div>
                     <div>
                         <h4 id="user-display-name">Location</h4>
-                        <p style="font-size: 0.75rem; color: var(--accent-blue);"><i class="fa-solid fa-database"></i> Live Sheet Connected</p>
+                        <p style="font-size: 0.75rem; color: var(--accent-blue);"><i class="fa-solid fa-database"></i> Live Database Connected</p>
                     </div>
                 </div>
                 <button id="logout-btn" class="btn btn-secondary" style="padding: 8px 16px;">
@@ -418,14 +418,14 @@
                         
                         <!-- SECTION 1 -->
                         <div class="step-content" data-step="1">
-                            <div class="step-title"><i class="fa-solid fa-map-location-dot"></i> 1. Local</div>
+                            <div class="step-title"><i class="fa-solid fa-map-location-dot"></i> 1. Local detail</div>
                             <div class="form-group">
-                                <label>Local Name <span class="cell-tag">C1</span> (Auto-Locked)</label>
+                                <label>Local Hming <span class="cell-tag">C1</span> (Auto-Locked)</label>
                                 <input type="text" class="form-control" data-cell="C1" readonly placeholder="Auto-filled from user">
                             </div>
                             <div class="form-group">
                                 <label>Local Chairman <span class="cell-tag">C2</span></label>
-                                <input type="text" class="form-control" data-cell="C2" placeholder="Chairman Name">
+                                <input type="text" class="form-control" data-cell="C2" placeholder="Chairman Hming">
                             </div>
                             <div class="form-group">
                                 <label>Phone <span class="cell-tag">E2</span></label>
@@ -435,11 +435,11 @@
 
                         <!-- SECTION 2 -->
                         <div class="step-content hidden" data-step="2">
-                            <div class="step-title"><i class="fa-solid fa-user-tie"></i> 2. Officials</div>
+                            <div class="step-title"><i class="fa-solid fa-user-tie"></i> 2. PYD Officials</div>
                             <div class="table-responsive">
                                 <table class="form-table">
                                     <thead>
-                                        <tr><th>Role</th><th>Name</th><th>Phone</th></tr>
+                                        <tr><th>Designation</th><th>Hming</th><th>Phone</th></tr>
                                     </thead>
                                     <tbody>
                                         <tr><td>President</td><td><input type="text" class="form-control" data-cell="C5"></td><td><input type="tel" class="form-control" data-cell="E5"></td></tr>
@@ -455,10 +455,10 @@
                         <!-- SECTION 3 -->
                         <div class="step-content hidden" data-step="3">
                             <div class="step-title"><i class="fa-solid fa-chart-pie"></i> 3. Statistics</div>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Note: E15 is auto-filled with 2nd Sheet Row Count. Rule: C15 + D15 must equal E15.</p>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Note: Fiel ṭhenkhat hai hi ama khata in fillup a nih.</p>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>Category</th><th>Male</th><th>Female</th><th>Total</th></tr></thead>
+                                    <thead><tr><th>Category</th><th>Pasal</th><th>Nuhmei</th><th>Total</th></tr></thead>
                                     <tbody id="stats-tbody"></tbody>
                                 </table>
                             </div>
@@ -466,19 +466,19 @@
 
                         <!-- SECTION 4 -->
                         <div class="step-content hidden" data-step="4">
-                            <div class="step-title"><i class="fa-solid fa-diagram-project"></i> 4. Any project?</div>
+                            <div class="step-title"><i class="fa-solid fa-diagram-project"></i> 4. Project in nei am?</div>
                             <div class="form-group">
                                 <label>Project Details <span class="cell-tag">C21</span></label>
-                                <textarea class="form-control" data-cell="C21" rows="5" placeholder="Describe projects..."></textarea>
+                                <textarea class="form-control" data-cell="C21" rows="5" placeholder="In nei naw chun fesan rawh."></textarea>
                             </div>
                         </div>
 
                         <!-- SECTION 5 -->
                         <div class="step-content hidden" data-step="5">
-                            <div class="step-title"><i class="fa-solid fa-envelope-open-text"></i> 5. Envelope</div>
+                            <div class="step-title"><i class="fa-solid fa-envelope-open-text"></i> 5. Day Dâkbâwm thaw râwn tak:</div>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Amount</th></tr></thead>
+                                    <thead><tr><th>#</th><th>Hming</th><th>Pa Hming</th><th>Amount</th></tr></thead>
                                     <tbody id="envelope-tbody"></tbody>
                                 </table>
                             </div>
@@ -486,28 +486,28 @@
 
                         <!-- SECTION 6 -->
                         <div class="step-content hidden" data-step="6">
-                            <div class="step-title"><i class="fa-solid fa-trophy"></i> 6. Other Achievement</div>
+                            <div class="step-title"><i class="fa-solid fa-trophy"></i> 6. Sinthaw ṭhat danghai:</div>
                             <div class="form-group">
-                                <label>Achievement Details <span class="cell-tag">C29</span></label>
-                                <textarea class="form-control" data-cell="C29" rows="5" placeholder="Details..."></textarea>
+                                <label>Details <span class="cell-tag">C29</span></label>
+                                <textarea class="form-control" data-cell="C29" rows="5" placeholder="In nei naw chun fesan rawh."></textarea>
                             </div>
                         </div>
 
                         <!-- SECTION 7 -->
                         <div class="step-content hidden" data-step="7">
-                            <div class="step-title"><i class="fa-solid fa-calendar-check"></i> 7. PYD Day?</div>
+                            <div class="step-title"><i class="fa-solid fa-calendar-check"></i> 7. PYD Day in hmang am?</div>
                             <div class="form-group">
-                                <label>PYD Day Observations <span class="cell-tag">C31</span></label>
+                                <label>In hmang chun, in hmang dan ziek rawh.<span class="cell-tag">C31</span></label>
                                 <input type="text" class="form-control" data-cell="C31">
                             </div>
                         </div>
 
                         <!-- SECTION 8 -->
                         <div class="step-content hidden" data-step="8">
-                            <div class="step-title"><i class="fa-solid fa-bowl-rice"></i> 8. Roasted Rice</div>
+                            <div class="step-title"><i class="fa-solid fa-bowl-rice"></i> 8. Bu fâiṭhâm thaw rawn tak:</div>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>#</th><th>Name</th><th>Amount</th></tr></thead>
+                                    <thead><tr><th>#</th><th>Hming</th><th>No</th></tr></thead>
                                     <tbody id="roasted-tbody"></tbody>
                                 </table>
                             </div>
@@ -515,17 +515,17 @@
 
                         <!-- SECTION 9 -->
                         <div class="step-content hidden" data-step="9">
-                            <div class="step-title"><i class="fa-solid fa-handshake"></i> 9. Social Work Day?</div>
+                            <div class="step-title"><i class="fa-solid fa-handshake"></i> 9. Social Work Day in hmang dan:</div>
                             <div class="form-group">
-                                <label>Details <span class="cell-tag">C39</span></label>
+                                <label> In hmang naw chun fesan rawh. <span class="cell-tag">C39</span></label>
                                 <input type="text" class="form-control" data-cell="C39">
                             </div>
                         </div>
 
                         <!-- SECTION 10 -->
                         <div class="step-content hidden" data-step="10">
-                            <div class="step-title"><i class="fa-solid fa-coins"></i> 10. Financial</div>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Rule: Income (C) must be ≥ Expense (D). [D49 is auto-calculated: Total Rows × 10]</p>
+                            <div class="step-title"><i class="fa-solid fa-coins"></i> 10. Financial Report</div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Important: Field ṭhenkhat hi ama khata in fillup a nih. (Membership fee pek zat & Total)</p>
                             <div class="table-responsive">
                                 <table class="form-table">
                                     <thead><tr><th>Type</th><th>Income Amount (C)</th><th>Expense Amount (D)</th></tr></thead>
@@ -536,10 +536,10 @@
 
                         <!-- SECTION 11 -->
                         <div class="step-content hidden" data-step="11">
-                            <div class="step-title"><i class="fa-solid fa-ban-smoke"></i> 11. Quit Smoking 2025</div>
+                            <div class="step-title"><i class="fa-solid fa-ban-smoke"></i> 11. 2025 sȗnga hmuom le hâwp nghei zat:</div>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>Male <span class="cell-tag">B59</span></th><th>Female <span class="cell-tag">C59</span></th><th>Total (Auto B+C) <span class="cell-tag">D59</span></th></tr></thead>
+                                    <thead><tr><th>Pasal <span class="cell-tag">B59</span></th><th>Nuhmei <span class="cell-tag">C59</span></th><th>Total (Auto B+C) <span class="cell-tag">D59</span></th></tr></thead>
                                     <tbody>
                                         <tr>
                                             <td><input type="number" class="form-control" data-cell="B59"></td>
@@ -553,10 +553,10 @@
 
                         <!-- SECTION 12 -->
                         <div class="step-content hidden" data-step="12">
-                            <div class="step-title"><i class="fa-solid fa-user-slash"></i> 12. New Quit Smoke</div>
+                            <div class="step-title"><i class="fa-solid fa-user-slash"></i> 12. 2026 sȗnga hmuom le hâwp nghei thar: </div>
                             <div class="table-responsive" style="max-height: 350px;">
                                 <table class="form-table">
-                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Gender</th></tr></thead>
+                                    <thead><tr><th>#</th><th>Hming</th><th>Pa hming</th><th>Gender</th></tr></thead>
                                     <tbody id="new-quit-tbody"></tbody>
                                 </table>
                             </div>
@@ -564,10 +564,10 @@
 
                         <!-- SECTION 13 -->
                         <div class="step-content hidden" data-step="13">
-                            <div class="step-title"><i class="fa-solid fa-chart-line"></i> 13. Total Quit Smoke</div>
+                            <div class="step-title"><i class="fa-solid fa-chart-line"></i> 13. Hmuom le hâwp nghei po po (2025-2026)</div>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>Male <span class="cell-tag">B81</span></th><th>Female <span class="cell-tag">C81</span></th><th>Total <span class="cell-tag">D81</span></th></tr></thead>
+                                    <thead><tr><th>Pasal <span class="cell-tag">B81</span></th><th>Nuhmei <span class="cell-tag">C81</span></th><th>Total <span class="cell-tag">D81</span></th></tr></thead>
                                     <tbody>
                                         <tr>
                                             <td><input type="number" class="form-control" data-cell="B81"></td>
@@ -581,10 +581,10 @@
 
                         <!-- SECTION 14 -->
                         <div class="step-content hidden" data-step="14">
-                            <div class="step-title"><i class="fa-solid fa-sitemap"></i> 14. Leadership</div>
+                            <div class="step-title"><i class="fa-solid fa-sitemap"></i> 14. Ṭhuoitu hlun chawimawina:</div>
                             <div class="table-responsive" style="max-height: 350px;">
                                 <table class="form-table">
-                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Designation + Year</th></tr></thead>
+                                    <thead><tr><th>#</th><th>Hming</th><th>Pa hming</th><th>Nina + kum</th></tr></thead>
                                     <tbody id="leadership-tbody"></tbody>
                                 </table>
                             </div>
@@ -592,10 +592,10 @@
 
                         <!-- SECTION 15 -->
                         <div class="step-content hidden" data-step="15">
-                            <div class="step-title"><i class="fa-solid fa-graduation-cap"></i> 15. Education Achieve</div>
+                            <div class="step-title"><i class="fa-solid fa-graduation-cap"></i> 15. Inchȗklai hlawtlingna changhai:</div>
                             <div class="table-responsive" style="max-height: 380px;">
                                 <table class="form-table">
-                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Class</th><th>Div</th><th>%</th><th>Board</th></tr></thead>
+                                    <thead><tr><th>#</th><th>Name</th><th>Pa hming</th><th>Class</th><th>Div</th><th>%</th><th>Board</th></tr></thead>
                                     <tbody id="edu-tbody"></tbody>
                                 </table>
                             </div>
@@ -603,10 +603,10 @@
 
                         <!-- SECTION 16 -->
                         <div class="step-content hidden" data-step="16">
-                            <div class="step-title"><i class="fa-solid fa-user-plus"></i> 16. New Worker</div>
+                            <div class="step-title"><i class="fa-solid fa-user-plus"></i> 16. Sorkar sin hmu thar:</div>
                             <div class="table-responsive" style="max-height: 350px;">
                                 <table class="form-table">
-                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Title</th><th>Place</th></tr></thead>
+                                    <thead><tr><th>#</th><th>Hming</th><th>Pa hming</th><th>Nina</th><th>Hmun</th></tr></thead>
                                     <tbody id="worker-tbody"></tbody>
                                 </table>
                             </div>
@@ -735,15 +735,17 @@
             document.getElementById('roasted-tbody').innerHTML = roastHtml;
 
             // Financial (Section 10) - D49 & Row 55 TOTAL are READONLY
-            const finItems = ["Local target", "Bamboo project", "Musical", "For Land", "Cond Fund", "Envelope", "Membership fee", "Ruby Jubilee", "Education", "Other source", "Added target", "Miscellaneous", "TOTAL"];
+            const finItems = ["Local target", "Bamboo project", "Musical sub-committee", "Project for Land", "Conference Fund", "Day dâkbâwm", "Membership fee", "Ruby Jubilee", "Education subcommittee", "Thil danga hmuna", "Target khȗm zat", "Miscellaneous", "TOTAL"];
             document.getElementById('financial-tbody').innerHTML = finItems.map((item, idx) => {
                 let r = 43 + idx;
                 let isTotal = (r === 55);
                 let isD49 = (r === 49);
+                let isC54 = (r === 54);
                 return `<tr>
                     <td><strong>${item}</strong></td>
                     <td><input type="number" class="form-control" data-cell="C${r}" ${isTotal ? 'readonly' : ''}></td>
                     <td><input type="number" class="form-control" data-cell="D${r}" ${(isTotal || isD49) ? 'readonly' : ''}></td>
+                    <td><input type="number" class="form-control" data-cell="D${r}" ${(isTotal || isC54) ? 'readonly' : ''}></td>
                 </tr>`;
             }).join('');
 
@@ -922,7 +924,7 @@
         }
 
         async function fetchSheetData(user) {
-            showLoading(`Loading saved data for "${user}" from Google Sheet...`);
+            showLoading(`Loading "${user}" Local data from Database...`);
             
             const cells = Array.from(document.querySelectorAll('[data-cell]')).map(el => el.getAttribute('data-cell'));
 
@@ -1029,7 +1031,7 @@
             if (currentStep === 3) {
                 if (!validateSection3Row15()) {
                     let e15Val = document.querySelector('[data-cell="E15"]')?.value || 0;
-                    showToast(`Male (C15) + Female (D15) must equal Total Member 2026 (${e15Val})!`, true);
+                    showToast(`Pasal (C15) + Nuhmei (D15) hi Total Member leh an mil ding a nih. (${e15Val})!`, true);
                     return;
                 }
             }
@@ -1037,7 +1039,7 @@
             // Section 10 Validation
             if (currentStep === 10) {
                 if (!validateFinancialSection()) {
-                    showToast("Income (C) cannot be smaller than Expense (D)!", true);
+                    showToast("Income hi Expense nekin a tam lem ding a nih.", true);
                     return;
                 }
             }
@@ -1073,7 +1075,7 @@
 
             prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
             nextBtn.innerHTML = currentStep === totalSteps ? 
-                `<span>Final Sync & Finish</span> <i class="fa-solid fa-cloud-arrow-up"></i>` : 
+                `<span>Save rawh.</span> <i class="fa-solid fa-cloud-arrow-up"></i>` : 
                 `<span>Next Section</span> <i class="fa-solid fa-chevron-right"></i>`;
         }
 
