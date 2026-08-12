@@ -455,9 +455,10 @@
                         <!-- SECTION 3 -->
                         <div class="step-content hidden" data-step="3">
                             <div class="step-title"><i class="fa-solid fa-chart-pie"></i> 3. Statistics</div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Note: E15 is auto-filled with 2nd Sheet Row Count. Rule: C15 + D15 must equal E15.</p>
                             <div class="table-responsive">
                                 <table class="form-table">
-                                    <thead><tr><th>Category</th><th>Male</th><th>Female</th><th>Total (Auto C+D)</th></tr></thead>
+                                    <thead><tr><th>Category</th><th>Male</th><th>Female</th><th>Total</th></tr></thead>
                                     <tbody id="stats-tbody"></tbody>
                                 </table>
                             </div>
@@ -738,7 +739,7 @@
             document.getElementById('financial-tbody').innerHTML = finItems.map((item, idx) => {
                 let r = 43 + idx;
                 let isTotal = (r === 55);
-                let isD49 = (r === 49); // D49 is auto-calculated from second sheet
+                let isD49 = (r === 49);
                 return `<tr>
                     <td><strong>${item}</strong></td>
                     <td><input type="number" class="form-control" data-cell="C${r}" ${isTotal ? 'readonly' : ''}></td>
@@ -783,13 +784,17 @@
            AUTOMATIC CALCULATIONS (REAL-TIME)
            -------------------------------------------------------------------------- */
         function runAutoCalculations() {
-            // 1. Statistics (Rows 13 - 19: C + D = E)
+            // 1. Statistics (Rows 13-19: C + D = E EXCEPT Row 15 which is fetched from 2nd sheet)
             for(let r = 13; r <= 19; r++) {
+                if (r === 15) continue; // Skip E15 auto-sum because E15 comes from 2nd sheet!
                 let c = parseFloat(document.querySelector(`[data-cell="C${r}"]`)?.value) || 0;
                 let d = parseFloat(document.querySelector(`[data-cell="D${r}"]`)?.value) || 0;
                 let eInput = document.querySelector(`[data-cell="E${r}"]`);
                 if (eInput) eInput.value = c + d;
             }
+
+            // Also validate C15 + D15 = E15
+            validateSection3Row15();
 
             // 2. Financial Totals (Sum C43:C54 -> C55, Sum D43:D54 -> D55)
             let sumC = 0, sumD = 0;
@@ -810,8 +815,30 @@
         }
 
         /* --------------------------------------------------------------------------
-           FINANCIAL VALIDATION (C >= D)
+           VALIDATIONS
            -------------------------------------------------------------------------- */
+        // Validation for Section 3 Row 15: C15 + D15 must equal E15
+        function validateSection3Row15() {
+            let c15 = parseFloat(document.querySelector('[data-cell="C15"]')?.value) || 0;
+            let d15 = parseFloat(document.querySelector('[data-cell="D15"]')?.value) || 0;
+            let e15 = parseFloat(document.querySelector('[data-cell="E15"]')?.value) || 0;
+
+            let cInput = document.querySelector('[data-cell="C15"]');
+            let dInput = document.querySelector('[data-cell="D15"]');
+
+            // Only validate if E15 has a value loaded
+            if (e15 > 0 && (c15 + d15 !== e15)) {
+                cInput?.classList.add('input-error');
+                dInput?.classList.add('input-error');
+                return false;
+            } else {
+                cInput?.classList.remove('input-error');
+                dInput?.classList.remove('input-error');
+                return true;
+            }
+        }
+
+        // Validation for Financial Section: C >= D
         function validateFinancialSection() {
             let isValid = true;
             for(let r = 43; r <= 55; r++) {
@@ -822,7 +849,6 @@
                 let cVal = parseFloat(cInput.value) || 0;
                 let dVal = parseFloat(dInput.value) || 0;
 
-                // Rule: C must be >= D
                 if (dVal > cVal) {
                     isValid = false;
                     dInput.classList.add('input-error');
@@ -863,15 +889,15 @@
                 // Read saved main sheet data
                 await fetchSheetData(user);
 
-                // Fetch second sheet row count and compute D49 = rows * 10
-                await fetchRowCountAndSetD49(user);
+                // Fetch second sheet row count -> Populates E15 & D49
+                await fetchSecondSheetData(user);
             } else {
                 loginError.style.display = 'block';
             }
         });
 
-        /* Fetch row count from second Google Sheet and set D49 = count * 10 */
-        async function fetchRowCountAndSetD49(user) {
+        /* Fetch row count from second Google Sheet: Sets E15 = count, D49 = count * 10 */
+        async function fetchSecondSheetData(user) {
             try {
                 const url = `${APPSCRIPT_URL}?action=getRowCount&sheetName=${encodeURIComponent(user)}&sheetId=${encodeURIComponent(SECOND_SPREADSHEET_ID)}&hasHeader=true`;
                 const response = await fetch(url);
@@ -879,13 +905,16 @@
 
                 if (res.status === "success" && typeof res.count === 'number') {
                     const rowCount = res.count;
-                    const d49Value = rowCount * 10;
 
+                    // Set E15 = Total Rows Count
+                    const e15Input = document.querySelector('[data-cell="E15"]');
+                    if (e15Input) e15Input.value = rowCount;
+
+                    // Set D49 = Total Rows * 10
                     const d49Input = document.querySelector('[data-cell="D49"]');
-                    if (d49Input) {
-                        d49Input.value = d49Value;
-                    }
-                    runAutoCalculations(); // Recalculate Total Expense D55
+                    if (d49Input) d49Input.value = rowCount * 10;
+
+                    runAutoCalculations();
                 }
             } catch (err) {
                 console.warn("Could not fetch second sheet row count:", err);
@@ -904,8 +933,8 @@
 
                 if (result.status === "success" && result.data) {
                     Object.keys(result.data).forEach(cellRef => {
-                        // Skip C1 and D49 overrides to keep auto-calculated values locked
-                        if (cellRef === "C1" || cellRef === "D49") return;
+                        // Skip C1, E15, and D49 overrides to keep auto-calculated values locked
+                        if (cellRef === "C1" || cellRef === "E15" || cellRef === "D49") return;
 
                         const input = document.querySelector(`[data-cell="${cellRef}"]`);
                         if (input && result.data[cellRef] !== undefined && result.data[cellRef] !== "") {
@@ -917,7 +946,6 @@
                         }
                     });
 
-                    // Re-run calculations after loading sheet data
                     runAutoCalculations();
                     showToast(`Loaded existing data from tab "${user}"!`);
                 }
@@ -935,7 +963,11 @@
         async function syncSheetData() {
             if (!loggedUser) return;
 
-            // Run validation before saving
+            // Run validations
+            if (!validateSection3Row15()) {
+                showToast("Error: Male (C15) + Female (D15) must equal Total Member 2026 (E15)!", true);
+                return;
+            }
             if (!validateFinancialSection()) {
                 showToast("Error: Income (C) must be ≥ Expense (D) in Financial section!", true);
                 return;
@@ -993,7 +1025,16 @@
 
         /* Wizard Navigation */
         nextBtn.addEventListener('click', async () => {
-            // Validation on Section 10 before leaving
+            // Section 3 Validation
+            if (currentStep === 3) {
+                if (!validateSection3Row15()) {
+                    let e15Val = document.querySelector('[data-cell="E15"]')?.value || 0;
+                    showToast(`Male (C15) + Female (D15) must equal Total Member 2026 (${e15Val})!`, true);
+                    return;
+                }
+            }
+
+            // Section 10 Validation
             if (currentStep === 10) {
                 if (!validateFinancialSection()) {
                     showToast("Income (C) cannot be smaller than Expense (D)!", true);
