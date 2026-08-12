@@ -1,1 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Connected Report Portal</title>
+    <!-- Google Font & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-primary: #070b19;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --accent-blue: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.35);
+            --accent-gradient: linear-gradient(135deg, #2563eb, #38bdf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 10px;
+        }
+
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+            animation: float 12s infinite alternate ease-in-out;
+        }
+
+        .orb-1 { width: 350px; height: 350px; background: #1e3a8a; top: -50px; left: -50px; }
+        .orb-2 { width: 450px; height: 450px; background: #0284c7; bottom: -100px; right: -100px; animation-delay: -6s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 50px) scale(1.1); }
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            position: relative;
+            width: 100%;
+        }
+
+        /* Animations */
+        .layout-section {
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fade-out { opacity: 0; transform: translateY(-20px) scale(0.98); pointer-events: none; }
+        .fade-in { opacity: 1; transform: translateY(0) scale(1); }
+        .hidden { display: none !important; }
+
+        /* Buttons */
+        .btn {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            outline: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn:active { transform: scale(0.96) translateY(0); }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+
+        /* Form Controls */
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .cell-tag {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        select.form-control option { background: #0f172a; color: var(--text-main); }
+
+        /* Responsive Table */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-top: 10px;
+        }
+
+        table.form-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 500px;
+        }
+
+        table.form-table th, table.form-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+        }
+
+        table.form-table th { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); font-weight: 600; }
+        table.form-table td .form-control { padding: 8px 10px; }
+
+        /* Login Layout */
+        #login-layout { max-width: 420px; }
+        .login-card { padding: 40px 30px; text-align: center; }
+
+        .brand-logo {
+            width: 60px; height: 60px;
+            background: var(--accent-gradient);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center; justify-content: center;
+            font-size: 1.8rem; color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px var(--accent-glow);
+        }
+
+        .error-msg {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* Home Layout */
+        #home-layout { max-width: 950px; }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-badge { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 40px; height: 40px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700;
+        }
+
+        /* Progress Bar */
+        .progress-container { margin-bottom: 24px; padding: 16px 20px; }
+        .progress-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; font-size: 0.85rem; color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            width: 100%; height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px; overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%; width: 5.88%;
+            background: var(--accent-gradient);
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px var(--accent-blue);
+        }
+
+        .step-card {
+            padding: 28px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .step-title {
+            font-size: 1.3rem; font-weight: 700;
+            margin-bottom: 18px; color: var(--text-main);
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;
+        }
+
+        .step-actions {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--glass-border);
+        }
+
+        /* Sync Spinner Overlay */
+        .loading-overlay {
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(7, 11, 25, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .spinner {
+            width: 45px; height: 45px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 20px; right: 20px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--success);
+            backdrop-filter: blur(10px); color: #ecfdf5;
+            padding: 12px 20px; border-radius: 12px;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000; transform: translateY(100px); opacity: 0;
+            transition: all 0.4s ease;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 600px) {
+            .step-card { padding: 18px; }
+            .btn { width: 48%; padding: 10px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+
+    <!-- Sync Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p id="loading-text" style="font-size: 0.95rem; font-weight: 500;">Connecting to Google Sheets...</p>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-cloud-arrow-up" style="color: var(--success); font-size: 1.2rem;"></i>
+        <span id="toast-text">Data synced with Google Sheets!</span>
+    </div>
+
+    <!-- 1. LOGIN LAYOUT -->
+    <section id="login-layout" class="layout-section fade-in">
+        <div class="glass-card login-card">
+            <div class="brand-logo">
+                <i class="fa-solid fa-file-signature"></i>
+            </div>
+            <h2 style="margin-bottom: 6px;">Report Portal</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 24px;">Connected to Google Sheets Database</p>
+
+            <div id="login-error" class="error-msg">
+                <i class="fa-solid fa-triangle-exclamation"></i> Invalid User or Password
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username-select">Select User Location</label>
+                    <select id="username-select" class="form-control" required>
+                        <option value="" disabled selected>-- Select Location --</option>
+                        <option value="Gilgal">Gilgal</option>
+                        <option value="Tabernacle">Tabernacle</option>
+                        <option value="Jorkha">Jorkha</option>
+                        <option value="Hmarkhawlien">Hmarkhawlien</option>
+                        <option value="Chikhur">Chikhur</option>
+                        <option value="Bethel">Bethel</option>
+                        <option value="Tlangmawi">Tlangmawi</option>
+                        <option value="Zoar">Zoar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="password-input">Password</label>
+                    <input type="password" id="password-input" class="form-control" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">
+                    <span>Sign In & Load Sheet</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 2. HOME LAYOUT (17-STEP FORM WIZARD) -->
+    <section id="home-layout" class="layout-section fade-out hidden">
+        <div style="width: 100%;">
+            <!-- Header Navbar -->
+            <nav class="glass-card navbar">
+                <div class="user-badge">
+                    <div class="avatar" id="user-avatar">G</div>
+                    <div>
+                        <h4 id="user-display-name">Location</h4>
+                        <p style="font-size: 0.75rem; color: var(--accent-blue);"><i class="fa-solid fa-database"></i> Live Sheet Connected</p>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary" style="padding: 8px 16px;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </nav>
+
+            <!-- Progress Card -->
+            <div class="glass-card progress-container">
+                <div class="progress-header">
+                    <span>Progress: <strong id="step-counter-text" style="color: var(--text-main);">Section 1 of 17</strong></span>
+                    <span id="step-percentage">6% Completed</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <!-- Form Wizard Container -->
+            <form id="wizard-form">
+                <div class="glass-card step-card">
+                    <div id="wizard-steps-container">
+                        
+                        <!-- SECTION 1 -->
+                        <div class="step-content" data-step="1">
+                            <div class="step-title"><i class="fa-solid fa-map-location-dot"></i> 1. Local</div>
+                            <div class="form-group">
+                                <label>Local Name <span class="cell-tag">C1</span></label>
+                                <input type="text" class="form-control" data-cell="C1" placeholder="Enter Local Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Local Chairman <span class="cell-tag">C2</span></label>
+                                <input type="text" class="form-control" data-cell="C2" placeholder="Chairman Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone <span class="cell-tag">E2</span></label>
+                                <input type="tel" class="form-control" data-cell="E2" placeholder="Phone Number">
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2 -->
+                        <div class="step-content hidden" data-step="2">
+                            <div class="step-title"><i class="fa-solid fa-user-tie"></i> 2. Officials</div>
+                            <div class="table-responsive">
+                                <table class="form-table">
+                                    <thead>
+                                        <tr><th>Role</th><th>Name</th><th>Phone</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>President</td><td><input type="text" class="form-control" data-cell="C5"></td><td><input type="tel" class="form-control" data-cell="E5"></td></tr>
+                                        <tr><td>Vice President</td><td><input type="text" class="form-control" data-cell="C6"></td><td><input type="tel" class="form-control" data-cell="E6"></td></tr>
+                                        <tr><td>Secretary</td><td><input type="text" class="form-control" data-cell="C7"></td><td><input type="tel" class="form-control" data-cell="E7"></td></tr>
+                                        <tr><td>Assist Secretary</td><td><input type="text" class="form-control" data-cell="C8"></td><td><input type="tel" class="form-control" data-cell="E8"></td></tr>
+                                        <tr><td>Treasurer</td><td><input type="text" class="form-control" data-cell="C9"></td><td><input type="tel" class="form-control" data-cell="E9"></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 3 -->
+                        <div class="step-content hidden" data-step="3">
+                            <div class="step-title"><i class="fa-solid fa-chart-pie"></i> 3. Statistics</div>
+                            <div class="table-responsive">
+                                <table class="form-table">
+                                    <thead><tr><th>Category</th><th>Male</th><th>Female</th><th>Total</th></tr></thead>
+                                    <tbody id="stats-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 4 -->
+                        <div class="step-content hidden" data-step="4">
+                            <div class="step-title"><i class="fa-solid fa-diagram-project"></i> 4. Any project?</div>
+                            <div class="form-group">
+                                <label>Project Details <span class="cell-tag">C21</span></label>
+                                <textarea class="form-control" data-cell="C21" rows="5" placeholder="Describe projects..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 5 -->
+                        <div class="step-content hidden" data-step="5">
+                            <div class="step-title"><i class="fa-solid fa-envelope-open-text"></i> 5. Envelope</div>
+                            <div class="table-responsive">
+                                <table class="form-table">
+                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Amount</th></tr></thead>
+                                    <tbody id="envelope-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 6 -->
+                        <div class="step-content hidden" data-step="6">
+                            <div class="step-title"><i class="fa-solid fa-trophy"></i> 6. Other Achievement</div>
+                            <div class="form-group">
+                                <label>Achievement Details <span class="cell-tag">C29</span></label>
+                                <textarea class="form-control" data-cell="C29" rows="5" placeholder="Details..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 7 -->
+                        <div class="step-content hidden" data-step="7">
+                            <div class="step-title"><i class="fa-solid fa-calendar-check"></i> 7. PYD Day?</div>
+                            <div class="form-group">
+                                <label>PYD Day Observations <span class="cell-tag">C31</span></label>
+                                <input type="text" class="form-control" data-cell="C31">
+                            </div>
+                        </div>
+
+                        <!-- SECTION 8 -->
+                        <div class="step-content hidden" data-step="8">
+                            <div class="step-title"><i class="fa-solid fa-bowl-rice"></i> 8. Roasted Rice</div>
+                            <div class="table-responsive">
+                                <table class="form-table">
+                                    <thead><tr><th>#</th><th>Name</th><th>Amount</th></tr></thead>
+                                    <tbody id="roasted-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 9 -->
+                        <div class="step-content hidden" data-step="9">
+                            <div class="step-title"><i class="fa-solid fa-handshake"></i> 9. Social Work Day?</div>
+                            <div class="form-group">
+                                <label>Details <span class="cell-tag">C39</span></label>
+                                <input type="text" class="form-control" data-cell="C39">
+                            </div>
+                        </div>
+
+                        <!-- SECTION 10 -->
+                        <div class="step-content hidden" data-step="10">
+                            <div class="step-title"><i class="fa-solid fa-coins"></i> 10. Financial</div>
+                            <div class="table-responsive">
+                                <table class="form-table">
+                                    <thead><tr><th>Type</th><th>Income Amount</th><th>Expense Amount</th></tr></thead>
+                                    <tbody id="financial-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 11 -->
+                        <div class="step-content hidden" data-step="11">
+                            <div class="step-title"><i class="fa-solid fa-ban-smoke"></i> 11. Quit Smoking 2025</div>
+                            <div class="table-responsive">
+                                <table class="form-table">
+                                    <thead><tr><th>Male <span class="cell-tag">B59</span></th><th>Female <span class="cell-tag">C59</span></th><th>Total <span class="cell-tag">D59</span></th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="number" class="form-control" data-cell="B59"></td>
+                                            <td><input type="number" class="form-control" data-cell="C59"></td>
+                                            <td><input type="number" class="form-control" data-cell="D59"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 12 -->
+                        <div class="step-content hidden" data-step="12">
+                            <div class="step-title"><i class="fa-solid fa-user-slash"></i> 12. New Quit Smoke</div>
+                            <div class="table-responsive" style="max-height: 350px;">
+                                <table class="form-table">
+                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Gender</th></tr></thead>
+                                    <tbody id="new-quit-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 13 -->
+                        <div class="step-content hidden" data-step="13">
+                            <div class="step-title"><i class="fa-solid fa-chart-line"></i> 13. Total Quit Smoke</div>
+                            <div class="table-responsive">
+                                <table class="form-table">
+                                    <thead><tr><th>Male <span class="cell-tag">B81</span></th><th>Female <span class="cell-tag">C81</span></th><th>Total <span class="cell-tag">D81</span></th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="number" class="form-control" data-cell="B81"></td>
+                                            <td><input type="number" class="form-control" data-cell="C81"></td>
+                                            <td><input type="number" class="form-control" data-cell="D81"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 14 -->
+                        <div class="step-content hidden" data-step="14">
+                            <div class="step-title"><i class="fa-solid fa-sitemap"></i> 14. Leadership</div>
+                            <div class="table-responsive" style="max-height: 350px;">
+                                <table class="form-table">
+                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Designation + Year</th></tr></thead>
+                                    <tbody id="leadership-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 15 -->
+                        <div class="step-content hidden" data-step="15">
+                            <div class="step-title"><i class="fa-solid fa-graduation-cap"></i> 15. Education Achieve</div>
+                            <div class="table-responsive" style="max-height: 380px;">
+                                <table class="form-table">
+                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Class</th><th>Div</th><th>%</th><th>Board</th></tr></thead>
+                                    <tbody id="edu-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 16 -->
+                        <div class="step-content hidden" data-step="16">
+                            <div class="step-title"><i class="fa-solid fa-user-plus"></i> 16. New Worker</div>
+                            <div class="table-responsive" style="max-height: 350px;">
+                                <table class="form-table">
+                                    <thead><tr><th>#</th><th>Name</th><th>Father</th><th>Title</th><th>Place</th></tr></thead>
+                                    <tbody id="worker-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 17 -->
+                        <div class="step-content hidden" data-step="17">
+                            <div class="step-title"><i class="fa-solid fa-signature"></i> 17. Reported by</div>
+                            <div class="form-group">
+                                <label>Reporter Name <span class="cell-tag">D138</span></label>
+                                <input type="text" class="form-control" data-cell="D138">
+                            </div>
+                            <div class="form-group">
+                                <label>Designation <span class="cell-tag">D139</span></label>
+                                <input type="text" class="form-control" data-cell="D139">
+                            </div>
+                            <div class="form-group">
+                                <label>Date <span class="cell-tag">D140</span></label>
+                                <input type="date" class="form-control" data-cell="D140">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Wizard Buttons -->
+                    <div class="step-actions">
+                        <button type="button" id="prev-btn" class="btn btn-secondary" style="visibility: hidden;">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </button>
+                        <button type="button" id="save-btn" class="btn btn-secondary" title="Save current progress to Sheet">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Save Draft
+                        </button>
+                        <button type="button" id="next-btn" class="btn">
+                            <span>Next Section</span> <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- JS LOGIC -->
+    <script>
+        // CONFIGURATION & CREDENTIALS
+        const APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbyH_8jVAwfGZ0E9FEOmQ2qrzNIuVvWG4gnNztzTLb64g5FZddrB-KFMXOXyMbOjZnHX4w/exec";
+        
+        const CREDENTIALS = {
+            "Gilgal": "1111",
+            "Tabernacle": "2222",
+            "Jorkha": "3333",
+            "Hmarkhawlien": "4444",
+            "Chikhur": "5555",
+            "Bethel": "6666",
+            "Tlangmawi": "7777",
+            "Zoar": "8888"
+        };
+
+        let currentStep = 1;
+        const totalSteps = 17;
+        let loggedUser = "";
+
+        // Elements
+        const loginLayout = document.getElementById('login-layout');
+        const homeLayout = document.getElementById('home-layout');
+        const loginForm = document.getElementById('login-form');
+        const usernameSelect = document.getElementById('username-select');
+        const passwordInput = document.getElementById('password-input');
+        const loginError = document.getElementById('login-error');
+        const userAvatar = document.getElementById('user-avatar');
+        const userDisplayName = document.getElementById('user-display-name');
+
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const stepCounterText = document.getElementById('step-counter-text');
+        const stepPercentage = document.getElementById('step-percentage');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingText = document.getElementById('loading-text');
+
+        // Init Form Tables
+        window.addEventListener('DOMContentLoaded', () => {
+            initDynamicTables();
+            document.querySelector('[data-cell="D140"]').valueAsDate = new Date();
+        });
+
+        function initDynamicTables() {
+            // Stats
+            const stats = [
+                { name: "2025 Member", cells: ["C13", "D13", "E13"] },
+                { name: "New Member", cells: ["C14", "D14", "E14"] },
+                { name: "Total Member 2026", cells: ["C15", "D15", "E15"] },
+                { name: "Married", cells: ["C16", "D16", "E16"] },
+                { name: "Unmarried", cells: ["C17", "D17", "E17"] },
+                { name: "Received HS", cells: ["C18", "D18", "E18"] },
+                { name: "Total HS", cells: ["C19", "D19", "E19"] }
+            ];
+            document.getElementById('stats-tbody').innerHTML = stats.map(s => `
+                <tr>
+                    <td>${s.name}</td>
+                    <td><input type="number" class="form-control" data-cell="${s.cells[0]}"></td>
+                    <td><input type="number" class="form-control" data-cell="${s.cells[1]}"></td>
+                    <td><input type="number" class="form-control" data-cell="${s.cells[2]}"></td>
+                </tr>
+            `).join('');
+
+            // Envelope
+            let envHtml = '';
+            for(let i=0; i<3; i++) {
+                let r = 25 + i;
+                envHtml += `<tr><td>${i+1}</td><td><input type="text" class="form-control" data-cell="B${r}"></td><td><input type="text" class="form-control" data-cell="C${r}"></td><td><input type="number" class="form-control" data-cell="D${r}"></td></tr>`;
+            }
+            document.getElementById('envelope-tbody').innerHTML = envHtml;
+
+            // Roasted Rice
+            let roastHtml = '';
+            for(let i=0; i<3; i++) {
+                let r = 35 + i;
+                roastHtml += `<tr><td>${i+1}</td><td><input type="text" class="form-control" data-cell="B${r}"></td><td><input type="number" class="form-control" data-cell="C${r}"></td></tr>`;
+            }
+            document.getElementById('roasted-tbody').innerHTML = roastHtml;
+
+            // Financial
+            const finItems = ["Local target", "Bamboo project", "Musical", "For Land", "Cond Fund", "Envelope", "Membership fee", "Ruby Jubilee", "Education", "Other source", "Added target", "Miscellaneous", "TOTAL"];
+            document.getElementById('financial-tbody').innerHTML = finItems.map((item, idx) => `<tr><td>${item}</td><td><input type="number" class="form-control" data-cell="C${43+idx}"></td><td><input type="number" class="form-control" data-cell="D${43+idx}"></td></tr>`).join('');
+
+            // Quit Smoke
+            let quitHtml = '';
+            for(let i=0; i<15; i++) {
+                let r = 63 + i;
+                quitHtml += `<tr><td>${i+1}</td><td><input type="text" class="form-control" data-cell="B${r}"></td><td><input type="text" class="form-control" data-cell="C${r}"></td><td><input type="text" class="form-control" data-cell="D${r}"></td></tr>`;
+            }
+            document.getElementById('new-quit-tbody').innerHTML = quitHtml;
+
+            // Leadership
+            let leadHtml = '';
+            for(let i=0; i<10; i++) {
+                let r = 85 + i;
+                leadHtml += `<tr><td>${i+1}</td><td><input type="text" class="form-control" data-cell="B${r}"></td><td><input type="text" class="form-control" data-cell="C${r}"></td><td><input type="text" class="form-control" data-cell="D${r}"></td></tr>`;
+            }
+            document.getElementById('leadership-tbody').innerHTML = leadHtml;
+
+            // Education
+            let eduHtml = '';
+            for(let i=0; i<25; i++) {
+                let r = 98 + i;
+                eduHtml += `<tr><td>${i+1}</td><td><input type="text" class="form-control" data-cell="B${r}"></td><td><input type="text" class="form-control" data-cell="C${r}"></td><td><input type="text" class="form-control" data-cell="D${r}"></td><td><input type="text" class="form-control" data-cell="E${r}"></td><td><input type="text" class="form-control" data-cell="F${r}"></td><td><input type="text" class="form-control" data-cell="G${r}"></td></tr>`;
+            }
+            document.getElementById('edu-tbody').innerHTML = eduHtml;
+
+            // Worker
+            let workHtml = '';
+            for(let i=0; i<10; i++) {
+                let r = 126 + i;
+                workHtml += `<tr><td>${i+1}</td><td><input type="text" class="form-control" data-cell="B${r}"></td><td><input type="text" class="form-control" data-cell="C${r}"></td><td><input type="text" class="form-control" data-cell="D${r}"></td><td><input type="text" class="form-control" data-cell="E${r}"></td></tr>`;
+            }
+            document.getElementById('worker-tbody').innerHTML = workHtml;
+        }
+
+        /* --------------------------------------------------------------------------
+           LOGIN & READ GOOGLE SHEET DATA
+           -------------------------------------------------------------------------- */
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = usernameSelect.value;
+            const pass = passwordInput.value.trim();
+
+            if (CREDENTIALS[user] && CREDENTIALS[user] === pass) {
+                loginError.style.display = 'none';
+                loggedUser = user;
+
+                // Show Layout
+                switchLayout(loginLayout, homeLayout, () => {
+                    userDisplayName.textContent = user;
+                    userAvatar.textContent = user.charAt(0);
+                    passwordInput.value = '';
+                });
+
+                // Read saved sheet data
+                await fetchSheetData(user);
+            } else {
+                loginError.style.display = 'block';
+            }
+        });
+
+        async function fetchSheetData(user) {
+            showLoading(`Loading saved data for "${user}" from Google Sheet...`);
+            
+            // Gather all cell references in form
+            const cells = Array.from(document.querySelectorAll('[data-cell]'))
+                               .map(el => el.getAttribute('data-cell'));
+
+            try {
+                const url = `${APPSCRIPT_URL}?action=read&sheetName=${encodeURIComponent(user)}&cells=${cells.join(',')}`;
+                const response = await fetch(url);
+                const result = await response.json();
+
+                if (result.status === "success" && result.data) {
+                    // Fill inputs with fetched sheet values
+                    Object.keys(result.data).forEach(cellRef => {
+                        const input = document.querySelector(`[data-cell="${cellRef}"]`);
+                        if (input && result.data[cellRef] !== undefined && result.data[cellRef] !== "") {
+                            // Format date strings if date picker
+                            if (input.type === 'date') {
+                                try {
+                                    const d = new Date(result.data[cellRef]);
+                                    input.valueAsDate = d;
+                                } catch(e) { input.value = result.data[cellRef]; }
+                            } else {
+                                input.value = result.data[cellRef];
+                            }
+                        }
+                    });
+                    showToast(`Loaded existing data from tab "${user}"!`);
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                showToast("Notice: Starting with blank form.", true);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        /* --------------------------------------------------------------------------
+           WRITE / UPDATE GOOGLE SHEET DATA
+           -------------------------------------------------------------------------- */
+        async function syncSheetData() {
+            if (!loggedUser) return;
+            showLoading(`Syncing data to tab "${loggedUser}"...`);
+
+            // Collect form key-values
+            const cellDataMap = {};
+            document.querySelectorAll('[data-cell]').forEach(input => {
+                const cell = input.getAttribute('data-cell');
+                cellDataMap[cell] = input.value;
+            });
+
+            try {
+                const response = await fetch(APPSCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        sheetName: loggedUser,
+                        cellData: cellDataMap
+                    })
+                });
+
+                const res = await response.json();
+                if (res.status === "success") {
+                    showToast(`Successfully saved to Google Sheet tab "${loggedUser}"!`);
+                } else {
+                    showToast("Failed to sync data with sheet.", true);
+                }
+            } catch (err) {
+                console.error("Save Error:", err);
+                showToast("Error connecting to Google Sheet server.", true);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Save Button Handler
+        saveBtn.addEventListener('click', () => syncSheetData());
+
+        /* Logout */
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            switchLayout(homeLayout, loginLayout, () => {
+                currentStep = 1;
+                loggedUser = "";
+                document.getElementById('wizard-form').reset();
+                updateStepUI();
+            });
+        });
+
+        /* Wizard Navigation */
+        nextBtn.addEventListener('click', async () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStepUI();
+            } else {
+                // Final Submit
+                await syncSheetData();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        });
+
+        function updateStepUI() {
+            document.querySelectorAll('.step-content').forEach(stepEl => {
+                if (parseInt(stepEl.getAttribute('data-step')) === currentStep) {
+                    stepEl.classList.remove('hidden');
+                } else {
+                    stepEl.classList.add('hidden');
+                }
+            });
+
+            const pct = Math.round((currentStep / totalSteps) * 100);
+            progressBarFill.style.width = `${pct}%`;
+            stepCounterText.textContent = `Section ${currentStep} of ${totalSteps}`;
+            stepPercentage.textContent = `${pct}% Completed`;
+
+            prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+            nextBtn.innerHTML = currentStep === totalSteps ? 
+                `<span>Final Sync & Finish</span> <i class="fa-solid fa-cloud-arrow-up"></i>` : 
+                `<span>Next Section</span> <i class="fa-solid fa-chevron-right"></i>`;
+        }
+
+        function switchLayout(from, to, callback) {
+            from.classList.remove('fade-in');
+            from.classList.add('fade-out');
+            setTimeout(() => {
+                from.classList.add('hidden');
+                to.classList.remove('hidden');
+                if (callback) callback();
+                setTimeout(() => {
+                    to.classList.remove('fade-out');
+                    to.classList.add('fade-in');
+                }, 50);
+            }, 400);
+        }
+
+        function showLoading(msg) {
+            loadingText.textContent = msg || "Syncing...";
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            toastText.textContent = msg;
+            toast.style.borderColor = isError ? "var(--danger)" : "var(--success)";
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+    </script>
+</body>
+</html>
