@@ -656,14 +656,14 @@
         const SECOND_SPREADSHEET_ID = "1dUJdmt7CokOneigl4JLzRsTBfRPYEAPcuypGsc7MAn0";
 
         const CREDENTIALS = {
-            "Gilgal": "1111",
-            "Tabernacle": "2222",
-            "Jorkha": "3333",
-            "Hmarkhawlien": "4444",
-            "Chikhur": "5555",
-            "Bethel": "6666",
-            "Tlangmawi": "7777",
-            "Zoar": "8888"
+            "Gilgal": "p.gg2026",
+            "Tabernacle": "tab.y2026",
+            "Jorkha": "d.jor2026",
+            "Hmarkhawlien": "hkl.p2026",
+            "Chikhur": "y.ck2026",
+            "Bethel": "pyd.b2026",
+            "Tlangmawi": "pyd.tm2026",
+            "Zoar": "zoar.d2026"
         };
 
         let currentStep = 1;
@@ -701,13 +701,13 @@
         function initDynamicTables() {
             // Stats (Section 3) - Columns E are READONLY
             const stats = [
-                { name: "2025 Member", cells: ["C13", "D13", "E13"] },
-                { name: "New Member", cells: ["C14", "D14", "E14"] },
+                { name: "2025 Member po po", cells: ["C13", "D13", "E13"] },
+                { name: "2026 Member thar", cells: ["C14", "D14", "E14"] },
                 { name: "Total Member 2026", cells: ["C15", "D15", "E15"] },
-                { name: "Married", cells: ["C16", "D16", "E16"] },
-                { name: "Unmarried", cells: ["C17", "D17", "E17"] },
-                { name: "Received HS", cells: ["C18", "D18", "E18"] },
-                { name: "Total HS", cells: ["C19", "D19", "E19"] }
+                { name: "Kohran dân ang innei", cells: ["C16", "D16", "E16"] },
+                { name: "Kohran dân naw anga innei", cells: ["C17", "D17", "E17"] },
+                { name: "Thlarau Thienghlim dawng thar (2026)", cells: ["C18", "D18", "E18"] },
+                { name: "Thlarau Thienghlim dawng po po (2025-2026)", cells: ["C19", "D19", "E19"] }
             ];
             document.getElementById('stats-tbody').innerHTML = stats.map(s => `
                 <tr>
